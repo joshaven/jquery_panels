@@ -56,13 +56,25 @@
   **/
   $.fn.jPanel = function(options){
     // Public Methods
-    this.panels = function(){};
-    this.addPanel = function(){};
-    this.removePanel = function(){};
+    this.panels = function(){
+      return [];
+    };
+    this.addPanel = function(){
+      return [];
+    };
+    this.removePanel = function(){
+      return [];
+    };
 
-    this.toggles = function(){};
-    this.addToggle = function(){};
-    this.removeToggle = function(){};
+    this.toggles = function(){
+      return [];
+    };
+    this.addToggle = function(){
+      return [];
+    };
+    this.removeToggle = function(){
+      return [];
+    };
     
     // Private methods & variables
     var init = function(self) {
