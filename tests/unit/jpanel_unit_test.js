@@ -9,6 +9,9 @@ $(document).ready(function(){
   });
   
   test("jPanel().addPanel", function() {
+    // need to ensure elements without id's get a calculated id like: 'jPanelAutoID'+self.panels().length
+    // and that existing id's are not overwritten
+    // and that all children are represented by id in the containers 'panels' data array
     same( $('#container').jPanel().addPanel(), [] );
   });
   
