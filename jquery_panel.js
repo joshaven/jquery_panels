@@ -8,6 +8,8 @@
  * Licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
 **/
+
+
    
 (function($){
   /**  $(container).jPanel(options)  **
@@ -28,11 +30,11 @@
    *              with this option.  
    *              Example use:  $(container).jPanel({toggles: {'#btn1':'#panel1' '#lnk2':'#panel2'}});
    *   panels:  [ref, ref] This can be reliabely infered as long as infer is set to true.
-   *              Optional, a jQuery Array of block elements or lookup(s) which can be
-   *              converted into a jQuery Array of block elements.  If you want to specify the panels,
+   *              Optional, a jQuery Array of elements or lookup(s) which can be
+   *              converted into a jQuery Array of elements.  If you want to specify the panels,
    *              you will likely also want to set infer to false, otherwise the panel option will have 
    *              to be specified each time jPanel is called to skip panel inference. 
-   *              Example use: $(container).jPanel({panels: ['#panel1', '#panel2']});
+   *              Example use: $(container).jPanel({panels: ['#panel1', '#panel2'], infer: false });
    *
    * Process: Effects the display of an elements direct child elements
    * 
@@ -55,33 +57,49 @@
    * infer to false to freeze the panels inference.
   **/
   $.fn.jPanel = function(options){
+    // Private methods & variables
+    var self = this,
+        init = function() {
+          self.children().each(function(i,el){ self.addPanel(el) });
+
+          return self;
+        };
+    
+    
     // Public Methods
     this.panels = function(){
-      return [];
+      // alert("found panels");
+      if (! self.data('panels')) { self.data('panels', []) }
+      return self.data('panels');
     };
-    this.addPanel = function(){
+    // Expects an element that is to be used as a panel.
+    this.addPanel = function(el){
+      // give the element an id if it doesn't have one
+      if (!el.id) { el.id = 'jPanelAutoID'+self.panels().length}
+      // append the panels array with the newest 
+      self.panels()[self.panels().length] = el.id;
       return [];
     };
     this.removePanel = function(){
+      alert("found removePanel");
       return [];
     };
 
     this.toggles = function(){
+      alert("found toggles");
       return [];
     };
     this.addToggle = function(){
+      alert("found addToggle");
       return [];
     };
     this.removeToggle = function(){
+      alert("found removeToggle");
       return [];
     };
     
-    // Private methods & variables
-    var init = function(self) {
-          return self;
-        };
 
     // Object code
-    return init(this);
+    return init();
   };  
 })(jQuery);
