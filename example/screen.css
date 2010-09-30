@@ -1,0 +1,108 @@
+/* 
+  dk_blue   #0d3349
+  lt_blue   #2b81af
+  gray      #D2E0E6
+  yelow     #faebbc
+  
+*/
+
+/** Headers */
+
+h1, h2 {
+  font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial;
+  color: #fff;
+}
+
+h1, h2, h3 {
+  padding: 0.5em 0 0.5em 0.5em;
+  margin: 0;
+}
+
+h1 {
+	text-shadow: rgba(0, 0, 0, 0.5) 4px 4px 1px;
+	background-color: #0d3349;
+	
+	border-radius: 15px 15px 0 0;
+	-moz-border-radius: 15px 15px 0 0;
+	-webkit-border-top-right-radius: 15px;
+	-webkit-border-top-left-radius: 15px;
+}
+
+h2 { 
+	background-color: #2b81af;
+	text-shadow: rgba(0, 0, 0, 0.5) 3px 3px 1px;
+}
+
+h3 { 
+  text-shadow: rgba(0, 0, 0, 0.5) 1px 1px 1px;
+  margin: 5px 0 0 0;
+}
+
+div {
+  background-color: #D2E0E6;
+  margin: 2px;
+  padding: 1px;
+}
+
+/** Footers */
+#footer {
+  font-size: x-small;
+	padding: 0.5em 0.5em 0.5em 2.5em;
+	background-color: #2b81af;
+	border-radius: 0 0 15px 15px;
+	-moz-border-radius: 0 0 15px 15px;
+	-webkit-border-bottom-right-radius: 15px;
+	-webkit-border-bottom-left-radius: 15px;
+}
+
+/**  Elements **/
+
+p { margin: 5px; }
+
+blockquote {
+  font: 14px/20px italic Times, serif;
+  background-color: #faebbc;
+  margin: 7px;
+  padding: 2px;
+  border-radius: 15px 15px 0 0;
+	-moz-border-radius: 15px 15px 15px 15px;
+	-webkit-border-top-right-radius: 15px;
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-bottom-right-radius: 15px;
+	-webkit-border-bottom-left-radius: 15px;
+	
+}
+
+code {
+  display: block;
+  border-top: 1px solid #2b81af;
+  border-left: 2px solid #2b81af;
+  font-family: 'Courier New', Courier, monospace;
+  color: #333;
+  margin: 3px 30px 3px 10px;
+  padding-left: 1px;
+}
+
+/**  Classes  **/
+ul.links {
+  list-style: none;
+  margin: 5px 0 5px 0;
+  padding: 0;
+}
+
+ul.links li {
+  display: inline;
+  border: outset 3px gray;
+  padding: 1px 3px 1px 3px;
+  cursor: pointer;
+  text-align: center;
+  width: 75px;
+}
+
+/**  ID's  **/
+#container div {
+  text-align: center;
+  border: 1px solid red;
+  width: 100px;
+  height: 100px;
+}

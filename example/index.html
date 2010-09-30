@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+  	<title>jPanel Example</title>
+    <link type="text/css" rel="stylesheet" href="screen.css" />
+    <script type="text/javascript" src="../support_files/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="../jquery_panel.js"></script>    
+  </head>
+  <body>
+    <h1>jPanel Example</h1>
+    <h2>Buttons to enable/disable boxes </h2>
+    <div>
+      <p>
+        <input id="button1" type="button" value="Button 1" />
+        <input id="button2" type="button" value="Button 2" />
+        <input id="button3" type="button" value="Button 3" />
+      </p>
+      <div id="container">
+        <span>...</span>
+        <div id="box1">This is box 1</div>
+        <div id="box2">This is box 2</div>
+        <div id="box3">This is box 3</div>
+      </div>
+      <script type="text/javascript">
+        $('#container').jPanel({                                                                               
+          order: 'auto',
+          toggle: {'#button1': '#box1', '#button2': '#box2', '#button3': '#box3'}
+        });
+      </script>
+      <h3>Here is the html &amp; JavaScript that went into the example above:</h3>
+      <blockquote>
+      
+        <p>
+          <code>
+            &lt;p&gt;<br />
+            &nbsp;&nbsp;&lt;input id="button1" type="button" Value="Button 1" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="button2" type="button" Value="Button 2" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="button3" type="button" Value="Button 3" /&gt;<br />
+            &lt;/p&gt;<br />
+            &lt;div id="container"&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box1"&gt;This is box 1&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box2"&gt;This is box 2&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box3"&gt;This is box 3&lt;/div&gt;<br />
+            &lt;/div&gt;<br />
+            &lt;script type="text/javascript"&gt;<br />
+              &nbsp;&nbsp;$('#container').jPanel({<br />                                                              
+                &nbsp;&nbsp;&nbsp;&nbsp;order: 'auto',<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;toggle: {'#button1': '#box1', '#button2': '#box2', '#button3': '#box3'}<br />
+              &nbsp;&nbsp;});<br />
+            &lt;/script&gt;<br />
+          </code>
+        </p>
+      </blockquote>
+    </div>
+    <div id="footer">Copyright© 2010 Joshaven Potter</div>
+  </body>
+</html>
