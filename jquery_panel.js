@@ -57,45 +57,92 @@
    * infer to false to freeze the panels inference.
   **/
   $.fn.jPanel = function(options){
-    // Private methods & variables
+  // Private methods & variables
     var self = this,
         init = function() {
-          self.children().each(function(i,el){ self.addPanel(el) });
-
-          return self;
+          if ( self.options('infer') ) { // infer panels and toggles if inference is enabled
+            if( !self.data('panels') )  self.addPanel();
+            if( !self.data('toggles') ) self.addToggle(); // toggle inference depends on panel inference
+          };
+          
+          return self; // return self, which is the 'this' of the jPanel object, an jQuery object.
         };
     
     
-    // Public Methods
+  // Public Methods
+    // Expects object or nil for setter OR string for getter; returns all options or value of getter
+    this.options = function(params){
+      if( typeof(params) == 'string' ) { // support self.options('key') over self.options().key
+        return self.options()[params];
+      } else {
+        if( !self.data('options') ) self.data('options', {}); // ensure data('options')
+        if( typeof(params) != 'object' )
+          params = typeof(options)=='object' ? options : {};  // ensure params as an object
+      
+        var opts = self.data('options');                          // shortcut variable
+        for (key in params) { opts[key] = params[key] }           // import any options from specified options object
+        if( !opts.order ) opts.order = 'maintain'                 // set default
+        if( !opts.width ) opts.width = 'maintain'                 // set default
+        if( !opts.infer ) opts.infer = true                       // set default
+      
+        return opts;
+      };
+    };
+  
     this.panels = function(){
-      // alert("found panels");
-      if (! self.data('panels')) { self.data('panels', []) }
+      if ( !self.data('panels') ) { self.data('panels', []) }
       return self.data('panels');
     };
-    // Expects an element that is to be used as a panel.
+    // Expects an element proper that is to be added to panels or nothing to infer panels. Returns panels.
     this.addPanel = function(el){
-      // give the element an id if it doesn't have one
-      if (!el.id) { el.id = 'jPanelAutoID'+self.panels().length}
-      // append the panels array with the newest 
-      self.panels()[self.panels().length] = el.id;
-      return [];
+      if(el) { 
+        // ensure element has an id
+        if (!el.id) { el.id = 'jPanelAutoID' + self.panels().length }
+        // add unique id's to panels
+        if(self.panels().indexOf(el.id)<0) self.panels()[self.panels().length] = el.id;
+      } else if( self.options('infer') ) { // no element given - try infer
+        self.children().each(function(i,el){ self.addPanel(el) });
+      };
+      return self.panels();
     };
-    this.removePanel = function(){
-      alert("found removePanel");
-      return [];
+    // Expects an element proper that is to be removed from panels. Returns panels.
+    this.removePanel = function(el){
+      if(el){
+        self.panels().splice( self.panels().indexOf(el), 1 );        
+      } else if( self.options('infer') ) { // no element given - try infer
+        // collect id's of child elements
+        var ids = [];
+        self.children().each(function(i,el){ if(el.id) ids[ids.length]=el.id }) 
+        
+        for ( i in self.panels() ) { // Remove any panel elements that are missing in the DOM
+          if( ids.indexOf(self.panels()[i]) < 0 ) self.panels().splice(i,1)
+        }
+      };
+      return self.panels();
     };
 
     this.toggles = function(){
-      alert("found toggles");
-      return [];
+      if (! self.data('toggles')) { self.data('toggles', {}) }
+      return self.data('toggles');
     };
-    this.addToggle = function(){
-      alert("found addToggle");
-      return [];
+
+    // Expects an object containing toggle id and panel id pairs ie: {'d1Toggle':'d1', 'd2Toggle':'d2'}
+    this.addToggle = function(toggleAndElementPairs){
+      if( typeof(toggleAndElementPairs) == 'object' ) { // set each toggle panel pair
+        $.each(toggleAndElementPairs, function(k,v){ self.toggles()[k] = v; });
+      } else if( self.options('infer') ) { // no element given - try infer
+        $.each(self.panels(), function(i,val) { // look for an element with ('idOfPanel' + 'Toggle')
+          if( $('#'+val+'Toggle').length > 0 ) { self.toggles()[val+'Toggle']=val; };
+        });
+      };
+      return self.toggles();
     };
-    this.removeToggle = function(){
-      alert("found removeToggle");
-      return [];
+    // Expects an element proper that is to be removed from toggles. Returns toggles.
+    this.removeToggle = function(el){
+      if(el) {
+        
+      };
+      return self.toggles();
     };
     
 

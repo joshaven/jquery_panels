@@ -1,2 +1,3 @@
 # TODO for jquery_panels
-* Get started with code
+* jPanel().removeToggle() needs to be written
+* jPanel().toggles() & jPanel().panels() should accept a callback for itteration
