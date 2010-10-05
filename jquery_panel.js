@@ -80,28 +80,28 @@
           params = typeof(options)=='object' ? options : {};  // ensure params as an object
       
         var opts = self.data('options');                          // shortcut variable
-        for (key in params) { opts[key] = params[key] }           // import any options from specified options object
-        if( !opts.order ) opts.order = 'maintain'                 // set default
-        if( !opts.width ) opts.width = 'maintain'                 // set default
-        if( !opts.infer ) opts.infer = true                       // set default
+        for (key in params) { opts[key] = params[key]; }          // import any options from specified options object
+        if( !opts.order ) opts.order = 'maintain';                // set default
+        if( !opts.width ) opts.width = 'maintain';                // set default
+        if( !opts.infer ) opts.infer = true;                      // set default
       
         return opts;
       };
     };
   
-    this.panels = function(){
-      if ( !self.data('panels') ) { self.data('panels', []) }
-      return self.data('panels');
+    this.panels = function(instance){
+      if ( !self.data('panels') ) { self.data('panels', []); }
+      return instance ? self.data('panels')[self.data('panels').indexOf(instance)] : self.data('panels');
     };
     // Expects an element proper that is to be added to panels or nothing to infer panels. Returns panels.
     this.addPanel = function(el){
       if(el) { 
         // ensure element has an id
-        if (!el.id) { el.id = 'jPanelAutoID' + self.panels().length }
+        if (!el.id) el.id = 'jPanelAutoID' + self.panels().length;
         // add unique id's to panels
         if(self.panels().indexOf(el.id)<0) self.panels()[self.panels().length] = el.id;
       } else if( self.options('infer') ) { // no element given - try infer
-        self.children().each(function(i,el){ self.addPanel(el) });
+        self.children().each(function(i,el) { self.addPanel(el); });
       };
       return self.panels();
     };
@@ -112,18 +112,19 @@
       } else if( self.options('infer') ) { // no element given - try infer
         // collect id's of child elements
         var ids = [];
-        self.children().each(function(i,el){ if(el.id) ids[ids.length]=el.id }) 
+        self.children().each(function(i,el) { if(el.id) ids[ids.length]=el.id; }); 
         
         for ( i in self.panels() ) { // Remove any panel elements that are missing in the DOM
-          if( ids.indexOf(self.panels()[i]) < 0 ) self.panels().splice(i,1)
+          if( ids.indexOf(self.panels()[i]) < 0 ) self.panels().splice(i,1);
         }
       };
       return self.panels();
     };
 
-    this.toggles = function(){
-      if (! self.data('toggles')) { self.data('toggles', {}) }
-      return self.data('toggles');
+    // Returns toggles, if key is provided it returns the requested instance of the toggles object
+    this.toggles = function(key){
+      if (! self.data('toggles')) { self.data('toggles', {}); };
+      return key ? self.data('toggles')[key] : self.data('toggles');
     };
 
     // Expects an object containing toggle id and panel id pairs ie: {'d1Toggle':'d1', 'd2Toggle':'d2'}
@@ -138,10 +139,15 @@
       return self.toggles();
     };
     // Expects an element proper that is to be removed from toggles. Returns toggles.
-    this.removeToggle = function(el){
-      if(el) {
-        
-      };
+    this.removeToggle = function(toggle){
+      if( toggle ) {
+        if( self.toggles(toggle) ) { delete self.toggles()[toggle]; };
+      } else if( self.options('infer') ) { 
+        // iterate through toggles removing any that don't have matching elements
+        $.each(self.toggles(), function(toggleId, panelId) {
+          if( ($('#'+toggleId).length < 1) || ($('#'+panelId).length < 1) ) delete self.toggles()[toggleId];
+        });
+      }
       return self.toggles();
     };
     

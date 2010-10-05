@@ -30,6 +30,8 @@ $(document).ready(function(){
     equals( $('#container').data('panels'), 
             $('#container').jPanel().panels(), 
             'Should return the data("panels") object');
+    $('#container').append('<div id="d1"></div><div id="d2"></div>').jPanel().addPanel();  
+    same( $('#container').jPanel().panels('d1'), 'd1', 'Should be able to ask for an instance of the panels' );
   });
   
   test("jPanel().addPanel()", function() {
@@ -42,13 +44,13 @@ $(document).ready(function(){
     same( $('#container').jPanel().addPanel(), ['d1', 'd2'], 'Should add new element' );
     
     $('#container').append('<div></div>');
-    var autoid = 'jPanelAutoID'+$('#container').jPanel().panels().length
+    var autoid = 'jPanelAutoID'+$('#container').jPanel().panels().length;
     same( $('#container').jPanel().addPanel(),
           ['d1', 'd2', autoid], 
           "Should give element without id's an auto-id" );
     
     equals( $('#container').children().length, 
-            $('#container').jPanel().panels().length, 'Should be the same lenght as child elements')
+            $('#container').jPanel().panels().length, 'Should be the same lenght as child elements');
   });
   
   test("jPanel().removePanel()", function() {
@@ -76,6 +78,10 @@ $(document).ready(function(){
     equals( $('#container').data('toggles'), 
             $('#container').jPanel().toggles(), 
             'the panels() method should return the data("toggles") object');
+
+    $('#container').jPanel().addToggle({one:1, two:2});
+
+    same( $('#container').jPanel().toggles('one'), 1, 'Should be able to ask for a properity of the toggle' );
   });
   
   test("jPanel().addToggle()", function() {
@@ -94,7 +100,17 @@ $(document).ready(function(){
   });
   
   test("jPanel().removeToggle()", function() {
-    same( $('#container').jPanel().removeToggle(), {} );
+    $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />');
+    $('#container').append('<div id="d1"></div><div id="d2"></div><div id="d3"></div>');
+    same( $('#container').jPanel().removeToggle('d2Toggle'), {'d1Toggle':'d1', 'd3Toggle':'d3'},
+          'Should setup test');
+
+    $('#buttons')[0].innerHTML = '<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />';
+    $('#container')[0].innerHTML = '<div id="d1"></div><div id="d2"></div><div id="d3"></div>';
+    same( $('#container').jPanel().addToggle(), {'d1Toggle':'d1', 'd2Toggle':'d2', 'd3Toggle':'d3'}, "Setup toggle test");
+    $('#d1Toggle').replaceWith(''); // Remove d1Toggle element manually
+    $('#d3').replaceWith(''); // Remove target d3 element manually
+    same( $('#container').jPanel().removeToggle(), {'d2Toggle': 'd2'}, "Should remove any toggles that don't have both target and toggle" );
   });
 
 }); // end of document ready function
