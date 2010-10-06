@@ -75,20 +75,24 @@ $(document).ready(function(){
   // toggle tests 
   test("jPanel().toggles()", function() {
     same( $('#container').jPanel().toggles(), {}, 'Should return an array, even when empty');
-    equals( $('#container').data('toggles'), 
+    equals( $(document.body).data('jPanelToggles'), 
             $('#container').jPanel().toggles(), 
             'the panels() method should return the data("toggles") object');
 
     $('#container').jPanel().addToggle({one:1, two:2});
 
     same( $('#container').jPanel().toggles('one'), 1, 'Should be able to ask for a properity of the toggle' );
+    $(document.body).data('jPanelToggles', {});   // reset manually added toggles
   });
   
   test("jPanel().addToggle()", function() {
     $('#buttons').append('<input id="d1Toggle" type="button" />');
     $('#container').append('<div id="d1"></div>');
-    same( $('#container').jPanel().toggles(), {'d1Toggle': 'd1'},
+    same( $('#container').jPanel().addToggle(), {'d1Toggle': 'd1'},
           'Should be able to infer toggles when named properly');
+          
+    // same( typeof($.data($('#d1Toggle').get(0)).events), 'object', 'Should add click callback to button' );
+    // same( typeof($.data($('#d1Toggle').get(0)).events.click), 'object', 'Should add click callback to button' );
           
     $('#buttons').append('<input id="d2Button" type="button" />');
     $('#container').append('<div id="d2"></div>');
@@ -97,11 +101,13 @@ $(document).ready(function(){
           
     same( $('#container').jPanel().addToggle({d2Button: 'd2'}), {'d1Toggle': 'd1', 'd2Button': 'd2'},
           'Should add when undetectable name is specified');
+    $(document.body).data('jPanelToggles', {});   // reset manually added toggles
   });
   
   test("jPanel().removeToggle()", function() {
     $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />');
     $('#container').append('<div id="d1"></div><div id="d2"></div><div id="d3"></div>');
+    $('#container').jPanel().addToggle(); // infer toggles
     same( $('#container').jPanel().removeToggle('d2Toggle'), {'d1Toggle':'d1', 'd3Toggle':'d3'},
           'Should setup test');
 
