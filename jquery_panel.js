@@ -60,21 +60,23 @@
   // Private methods & variables
     var self = this,
         toggleData = $(document.body).data('jPanelToggles'),
-        panelData = self.data('panels')
+        panelData = self.data('panels'),
         init = function() {
-          if ( self.options('infer') ) {  // infer panels and toggles if inference is enabled
-            if( !panelData ) {
-              self.data('panels', []); 
-              self.addPanel();            // panel inferance
-            };
-            
-            if( !toggleData ) {
-              $(document.body).data('jPanelToggles', {});
-              self.addToggle();                           // toggle inference depends on panel inference
-            }; 
+          if( !panelData ) {
+            self.data('panels', []);
+            panelData = self.data('panels');
+            self.addPanel();            // attempt panel inferance
           };
+          if ( !toggleData ) {
+            $(document.body).data('jPanelToggles', {});
+            toggleData = $(document.body).data('jPanelToggles')
+            self.addToggle();           // attempt toggle inference depends on panel inference
+          }; 
           
           return self; // return self, which is the 'this' of the jPanel object, an jQuery object.
+        },
+        toggleFunction = function() { 
+          $('#'+$(document.body).data('jPanelToggles')[this.id]).toggle(); 
         };
     
     
@@ -144,12 +146,13 @@
       if( typeof(toggleAndElementPairs) == 'object' ) { // set each toggle panel pair
         $.each(toggleAndElementPairs, function(t,el) {
           self.toggles(t,el);                           // add {toggle: element} pair to toggles
-          $('#'+t).click(function() { alert('toggeling '+el); }); // add onclick event to toggle
+          // $('#'+t).click(); // add onclick event to toggle
+          $('#'+t).click(toggleFunction)
           });
       } else if( self.options('infer') ) { // no element given - try infer
         $.each(self.panels(), function(i,val) { // look for an element with ('idOfPanel' + 'Toggle')
           if( $('#'+val+'Toggle').length > 0 ) {
-            $('#'+val+'Toggle').click(function() { alert('toggeling '+this.id); });  // add onclick event to toggle
+            $('#'+val+'Toggle').click(toggleFunction);  // add onclick event to toggle
             self.toggles(val+'Toggle', val);                              // add {toggle: element} pair to toggles
           };
         });
@@ -169,7 +172,6 @@
       }
       return self.toggles();
     };
-    
 
     // Object code
     return init();

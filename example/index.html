@@ -14,21 +14,17 @@
     <h2>Buttons to enable/disable boxes </h2>
     <div>
       <p>
-        <input id="button1" type="button" value="Button 1" />
-        <input id="button2" type="button" value="Button 2" />
-        <input id="button3" type="button" value="Button 3" />
+        <input id="box1Toggle" type="button" value="Toggle Box 1" />
+        <input id="box2Toggle" type="button" value="Toggle Box 2" />
+        <input id="box3Toggle" type="button" value="Toggle Box 3" />
       </p>
       <div id="container">
-        <span>...</span>
         <div id="box1">This is box 1</div>
         <div id="box2">This is box 2</div>
         <div id="box3">This is box 3</div>
       </div>
       <script type="text/javascript">
-        $('#container').jPanel({                                                                               
-          order: 'auto',
-          toggle: {'#button1': '#box1', '#button2': '#box2', '#button3': '#box3'}
-        });
+        $('#container').jPanel();
       </script>
       <h3>Here is the html &amp; JavaScript that went into the example above:</h3>
       <blockquote>
@@ -36,9 +32,9 @@
         <p>
           <code>
             &lt;p&gt;<br />
-            &nbsp;&nbsp;&lt;input id="button1" type="button" Value="Button 1" /&gt;<br />
-            &nbsp;&nbsp;&lt;input id="button2" type="button" Value="Button 2" /&gt;<br />
-            &nbsp;&nbsp;&lt;input id="button3" type="button" Value="Button 3" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box1Toggle" type="button" Value="Toggle Box 1" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box2Toggle" type="button" Value="Toggle Box 2" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box3Toggle" type="button" Value="Toggle Box 3" /&gt;<br />
             &lt;/p&gt;<br />
             &lt;div id="container"&gt;<br />
             &nbsp;&nbsp;&lt;div id="box1"&gt;This is box 1&lt;/div&gt;<br />
@@ -46,10 +42,7 @@
             &nbsp;&nbsp;&lt;div id="box3"&gt;This is box 3&lt;/div&gt;<br />
             &lt;/div&gt;<br />
             &lt;script type="text/javascript"&gt;<br />
-              &nbsp;&nbsp;$('#container').jPanel({<br />                                                              
-                &nbsp;&nbsp;&nbsp;&nbsp;order: 'auto',<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;toggle: {'#button1': '#box1', '#button2': '#box2', '#button3': '#box3'}<br />
-              &nbsp;&nbsp;});<br />
+              &nbsp;&nbsp;$('#container').jPanel();<br />
             &lt;/script&gt;<br />
           </code>
         </p>
