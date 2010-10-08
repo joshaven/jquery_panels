@@ -100,7 +100,7 @@ ul.links li {
 }
 
 /**  ID's  **/
-#container div {
+#container div, #container2 div {
   text-align: center;
   border: 1px solid red;
   width: 100px;

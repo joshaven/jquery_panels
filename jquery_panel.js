@@ -57,44 +57,105 @@
    * infer to false to freeze the panels inference.
   **/
   $.fn.jPanel = function(options) {
-  // Private methods & variables
+    // Initialize DOM data storage for body & container
+    if( !$(document.body).data('jPanelToggles') ) 
+      $(document.body).data('jPanelToggles', {});
+    if( !this.data('panels') )
+      this.data('panels', []);
+    if( !this.data('options') ) 
+      this.data('options', {});
+
+    // Private methods & variables
     var self = this,
         toggleData = $(document.body).data('jPanelToggles'),
-        panelData = self.data('panels'),
+        panelData = this.data('panels'),
         init = function() {
-          if( !panelData ) {
-            self.data('panels', []);
-            panelData = self.data('panels');
+          if( !self.data('jPanel') ) {  // initialize jPanel only if it has not been run on this container element
+            self.data('jPanel', true);  // that this is a jPanel container element
             self.addPanel();            // attempt panel inferance
-          };
-          if ( !toggleData ) {
-            $(document.body).data('jPanelToggles', {});
-            toggleData = $(document.body).data('jPanelToggles')
-            self.addToggle();           // attempt toggle inference depends on panel inference
-          }; 
+            self.addToggle();           // attempt toggle inference... must be after panel inference
+          }
           
-          return self; // return self, which is the 'this' of the jPanel object, an jQuery object.
+          return self;                  // return self: 'this' of the jPanel object, a jQuery object.
         },
-        toggleFunction = function() { 
-          $('#'+$(document.body).data('jPanelToggles')[this.id]).toggle(); 
+        toggleFunction = function() {
+          $('#'+$(document.body).data('jPanelToggles')[this.id]).toggle();
+          repositionPanels();
+        },
+        visablePanels = function() {
+          var myReturn = [];
+          $.each(self.panels(), function(i,panelID) {
+            var panel = $('#'+panelID);
+            if(panel.is(':visible')) myReturn[myReturn.length] = panel;
+          });
+          return myReturn;
+        },
+        insidePositionFor = function(container) {
+          container = $(container); // work with jQuery object
+          
+          var firstVisableChild = $.each(container, function(i,el) {
+            el = $(el);
+            if( el.is(":visible") ) return el;
+          });
+          
+          // var firstVisableChild = visablePanels()[0];
+          
+          if( container.children().length < 1 ) { // if container is empty, create a temporary inside element & measure it
+            container.append('<div id="TestElementRemoveMe">&nbsp;</div>');
+            var visableChild = $('TestElementRemoveMe'),
+                myReturn = visableChild.position();
+            visableChild.remove();
+            return myReturn;
+          } else { // return measured first element
+            return firstVisableChild.position();
+          };
+        },
+        repositionPanels = function() {
+          var nextPosition    = insidePositionFor(self),
+              vPanels         = visablePanels(),
+              targetWidth     = self.width() / visablePanels().length;
+              maxPanelHeight  = 0;
+          
+          $.each(vPanels, function(i, panel) {  // position each visablePanel
+            // Grow the container height as needed
+            if (self.height() < panel.height()) self.height(panel.height());
+            // record max panel height
+            if (panel.height() > maxPanelHeight ) maxPanelHeight = panel.height();
+            // object for css changes
+            var css = {position:'absolute', top:nextPosition.top, left:nextPosition.left}; 
+            // set width to calculated width when set to width is set to 'auto'
+            if( self.options('width') == 'auto' ) css.width = targetWidth;
+            // Apply css settings to panel
+            panel.css(css);
+            // if using auto width, reset the width using measured size, preventing oversized panels
+            if( self.options('width') == 'auto' ) { // adjust rendered size to desired size
+              console.log('Got an auto width panel: '+panel[0].id);
+              css.width = css.width-(panel.outerWidth()-targetWidth);
+              panel.css(css);
+            };
+            // set next starting position
+            nextPosition.left = nextPosition.left + panel.outerWidth();
+          });
+          self.height(maxPanelHeight);
         };
     
     
   // Public Methods
-    // Expects object or nil for setter OR string for getter; returns all options or value of getter
+    // Expects object or nil for setter 
+    // Alternatively supply a string for getter
+    // Returns all options or value of getter
     this.options = function(params) {
       if( typeof(params) == 'string' ) { // support self.options('key') over self.options().key
         return self.options()[params];
       } else {
-        if( !self.data('options') ) self.data('options', {}); // ensure data('options')
         if( typeof(params) != 'object' )
           params = typeof(options)=='object' ? options : {};  // ensure params as an object
       
-        var opts = self.data('options');                          // shortcut variable
-        for (key in params) { opts[key] = params[key]; }          // import any options from specified options object
-        if( !opts.order ) opts.order = 'maintain';                // set default
-        if( !opts.width ) opts.width = 'maintain';                // set default
-        if( !opts.infer ) opts.infer = true;                      // set default
+        var opts = self.data('options');                      // shortcut variable
+        for (key in params) { opts[key] = params[key]; }      // copy any options from params
+        opts.order = opts.order || 'maintain';                // set default
+        opts.width = opts.width || 'maintain';                // set default
+        opts.infer = opts.infer || true;                      // set default
       
         return opts;
       };
@@ -111,9 +172,20 @@
         if (!el.id) el.id = 'jPanelAutoID' + self.panels().length;
         // add unique id's to panels
         if(self.panels().indexOf(el.id)<0) self.panels()[self.panels().length] = el.id;
+        
+        // backup original order, position, width, & height
+        el = $(el);
+        el.data('original',{});
+        var original = el.data('original');
+        original.Position = el.position();
+        original.height = el.height();
+        original.width = el.width();
+        original.order = self.panels().indexOf(el[0].id);
       } else if( self.options('infer') ) { // no element given - try infer by calling addPanel on each child.
         self.children().each(function(i,el) { self.addPanel(el); });
       };
+      
+      repositionPanels();
       return self.panels();
     };
 
@@ -146,14 +218,13 @@
       if( typeof(toggleAndElementPairs) == 'object' ) { // set each toggle panel pair
         $.each(toggleAndElementPairs, function(t,el) {
           self.toggles(t,el);                           // add {toggle: element} pair to toggles
-          // $('#'+t).click(); // add onclick event to toggle
-          $('#'+t).click(toggleFunction)
-          });
-      } else if( self.options('infer') ) { // no element given - try infer
-        $.each(self.panels(), function(i,val) { // look for an element with ('idOfPanel' + 'Toggle')
+          $('#'+t).click(toggleFunction);               // add onclick event to toggle
+        });
+      } else if( self.options('infer') ) {              // no element given - try infer
+        $.each(self.panels(), function(i,val) {         // look for an element with ('idOfPanel' + 'Toggle')
           if( $('#'+val+'Toggle').length > 0 ) {
             $('#'+val+'Toggle').click(toggleFunction);  // add onclick event to toggle
-            self.toggles(val+'Toggle', val);                              // add {toggle: element} pair to toggles
+            self.toggles(val+'Toggle', val);            // add {toggle: element} pair to toggles
           };
         });
       };

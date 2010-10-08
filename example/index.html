@@ -11,7 +11,8 @@
   </head>
   <body>
     <h1>jPanel Example</h1>
-    <h2>Buttons to enable/disable boxes </h2>
+<!-- Example 1 -->
+    <h2>Three div elements: Toggle-able with maintained Width &amp; Order</h2>
     <div>
       <p>
         <input id="box1Toggle" type="button" value="Toggle Box 1" />
@@ -26,9 +27,8 @@
       <script type="text/javascript">
         $('#container').jPanel();
       </script>
-      <h3>Here is the html &amp; JavaScript that went into the example above:</h3>
+      <h3>Here is the HTML &amp; JavaScript that went into the example above:</h3>
       <blockquote>
-      
         <p>
           <code>
             &lt;p&gt;<br />
@@ -42,12 +42,50 @@
             &nbsp;&nbsp;&lt;div id="box3"&gt;This is box 3&lt;/div&gt;<br />
             &lt;/div&gt;<br />
             &lt;script type="text/javascript"&gt;<br />
-              &nbsp;&nbsp;$('#container').jPanel();<br />
+              &nbsp;&nbsp;$('#container').jPanel(); //width &amp; position default to maintain.<br />
             &lt;/script&gt;<br />
           </code>
         </p>
       </blockquote>
     </div>
+<!-- Example 2 -->
+    <h2>Three div elements: Toggle-able with auto Width &amp; Order</h2>
+    <div>
+      <p>
+        <input id="box4Toggle" type="button" value="Toggle Box 4" />
+        <input id="box5Toggle" type="button" value="Toggle Box 5" />
+        <input id="box6Toggle" type="button" value="Toggle Box 6" />
+      </p>
+      <div id="container2">
+        <div id="box4">This is box 4</div>
+        <div id="box5">This is box 5</div>
+        <div id="box6">This is box 6</div>
+      </div>
+      <script type="text/javascript">
+        $('#container2').jPanel({width:'auto', order:'auto'});
+      </script>
+      <h3>Here is the HTML &amp; JavaScript that went into the example above:</h3>
+      <blockquote>
+        <p>
+          <code>
+            &lt;p&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box4Toggle" type="button" Value="Toggle Box 4" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box5Toggle" type="button" Value="Toggle Box 5" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box6Toggle" type="button" Value="Toggle Box 6" /&gt;<br />
+            &lt;/p&gt;<br />
+            &lt;div id="container"&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box4"&gt;This is box 4&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box5"&gt;This is box 5&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box6"&gt;This is box 6&lt;/div&gt;<br />
+            &lt;/div&gt;<br />
+            &lt;script type="text/javascript"&gt;<br />
+              &nbsp;&nbsp;$('#container').jPanel({width:'auto', order:'auto'});<br />
+            &lt;/script&gt;<br />
+          </code>
+        </p>
+      </blockquote>
+    </div>
+
     <div id="footer">Copyright© 2010 Joshaven Potter</div>
   </body>
 </html>
