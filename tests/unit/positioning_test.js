@@ -19,7 +19,12 @@ $(document).ready(function(){
   });
   
   test('Should position in empty container', function() {
-    ok('creating an element in the container, reading position & removing the element')
+    var container = $('#container').jPanel(),
+        ch = container.children();
+    
+    same( container.position(), {top:0, left:0}, 'should setup with a position of 0,0' );
+    equals( container.children().length, 0, 'Should setup without children elements' );
+    // equals('creating an element in the container, reading position & removing the element');
   });
   
 }); // end of document ready function

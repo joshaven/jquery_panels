@@ -102,7 +102,7 @@
           
           if( container.children().length < 1 ) { // if container is empty, create a temporary inside element & measure it
             container.append('<div id="TestElementRemoveMe">&nbsp;</div>');
-            var visableChild = $('TestElementRemoveMe'),
+            var visableChild = $('#TestElementRemoveMe'),
                 myReturn = visableChild.position();
             visableChild.remove();
             return myReturn;
@@ -129,7 +129,6 @@
             panel.css(css);
             // if using auto width, reset the width using measured size, preventing oversized panels
             if( self.options('width') == 'auto' ) { // adjust rendered size to desired size
-              console.log('Got an auto width panel: '+panel[0].id);
               css.width = css.width-(panel.outerWidth()-targetWidth);
               panel.css(css);
             };
