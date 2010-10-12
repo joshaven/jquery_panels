@@ -1,4 +1,4 @@
-NOTICE: This is a non-functional shell of a project. Contributors Welcome.
+NOTICE: This project is mostly functional.  Look for complete code soon.
 
 # Web Panels built with jQuery
 Web content panels that can be hidden, moved, resized, added to, or removed.  An 
