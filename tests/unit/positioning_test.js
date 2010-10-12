@@ -53,18 +53,18 @@ $(document).ready(function(){
 
     $('#d1Toggle').click(); // Click to hide first div; div should be shifted to the end
     $('#d1Toggle').click(); // Click to show first div
-    same( container.panels(), ['d2', 'd3', 'd4', 'd1'], 'Should have an adjusted order' );
+    same( container.panels(), ['d2','d3','d4','d1'], 'Should have an adjusted order' );
     
     $('#d3Toggle').click(); // Click to hide d3 div; should be shifted to the end
     $('#d3Toggle').click(); // Click to show first div
-    same( container.panels(), ['d2', 'd4', 'd1', 'd3'], 'Should have an adjusted order' );
+    same( container.panels(), ['d2','d4','d1','d3'], 'Should have an adjusted order' );
     
     $('#d2Toggle').click(); // turn d2 off shifting it into the invisable divs
-    same( container.panels(), ['d4', 'd1', 'd3', 'd2'], 'Should have an adjusted order' );
-    $('#d4Toggle').click(); // turn d3 off shifting it into the invisable divs
-    same( container.panels(), ['d1', 'd3', 'd4', 'd2'], 'Should have an adjusted order' );
+    same( container.panels(), ['d4','d1','d3',   'd2'], 'Should have an adjusted order' );
+    $('#d4Toggle').click(); // turn d4 off shifting it into the invisable divs
+    same( container.panels(), ['d1','d3',   'd4','d2'], 'Should have an adjusted order' );
     $('#d1Toggle').click(); // turn d1 off shifting it into the invisable divs
-    same( container.panels(), ['d3', 'd1', 'd4', 'd2'], 'Should have an adjusted order' );
+    same( container.panels(), ['d3',   'd1','d4','d2'], 'Should have an adjusted order' );
     
     container.remove(); // cleanup visable 
   });
