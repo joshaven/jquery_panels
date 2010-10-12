@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
   module('Positioning before calling jPanel()');
-  test("Should position elements normally", function() {    
+  test("Should position elements normally", function() {
     var container = $('#container').append('<div>Hello</div><div>World</div><div>!</div>'),
         ch = container.children();
     
@@ -48,8 +48,8 @@ $(document).ready(function(){
   
   test('Should respond to auto order', function() {
     $('#container').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" /><input id="d4Toggle" type="button" />');
-    var container = $(document.body).append('<div id="container3"></div>'),
-        container.append('<div id="d1"></div><div id="d2"></div><div id="d3"></div><div id="d4"></div>').jPanel({order:'auto'});
+    $(document.body).append('<div id="container3"><div id="d1"></div><div id="d2"></div><div id="d3"></div><div id="d4"></div></div>');
+    var container = $("#container3").jPanel({order:'auto'});
 
     $('#d1Toggle').click(); // Click to hide first div; div should be shifted to the end
     $('#d1Toggle').click(); // Click to show first div
