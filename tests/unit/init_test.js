@@ -1,5 +1,9 @@
 $(document).ready(function(){
   module('Initialization Tests jPanel()');
+  test("Graceful failure when the target container does not exist", function() {
+    ok( $('#notReal').jPanel() == false );
+  });
+
   test(".options()", function() {
     same( $('#container').jPanel().options(), 
       {order: "maintain", width: "maintain", infer: true }, 

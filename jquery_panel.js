@@ -64,12 +64,17 @@
       this.data('panels', []);
     if( !this.data('options') ) 
       this.data('options', {});
+    if( !this.data('panelOrder') ) 
+      this.data('panelOrder', []);
+    
 
     // Private methods & variables
     var self = this,
         toggleData = $(document.body).data('jPanelToggles'),
         panelData = this.data('panels'),
         init = function() {
+          if( self.length == 0 ) return false; // bail out gracefully if the container object doesn't exist.
+          
           if( !self.data('jPanel') ) {  // initialize jPanel only if it has not been run on this container element
             self.data('jPanel', true);  // that this is a jPanel container element
             self.addPanel();            // attempt panel inferance
@@ -82,24 +87,34 @@
           $('#'+$(document.body).data('jPanelToggles')[this.id]).toggle();
           repositionPanels();
         },
-        visablePanels = function() {
-          var myReturn = [];
+        visablePanels = function() { // returns an array of panel jquery dom objects
+          var visable = [];
           $.each(self.panels(), function(i,panelID) {
             var panel = $('#'+panelID);
-            if(panel.is(':visible')) myReturn[myReturn.length] = panel;
+            if(panel.is(':visible')) visable.push(panel);
           });
-          return myReturn;
+          return visable;
         },
-        insidePositionFor = function(container) {
+        invisablePanels = function() { // returns an array of panel jquery dom objects
+          var visableIDs = [],
+              invisable = [];
+          
+          // collect visable id's
+          $.each(visablePanels(), function(i,v) { visableIDs.push(v[0].id); });
+              
+          $.each(self.panels(), function(i,id) {
+            if( visableIDs.indexOf(id) < 0 ) { invisable.push($('#'+id)); }
+          });
+          return invisable;
+        },
+        insidePositionFor = function(container) { // retuns an object: .position() of first element inside container
           container = $(container); // work with jQuery object
           
           var firstVisableChild = $.each(container, function(i,el) {
             el = $(el);
             if( el.is(":visible") ) return el;
           });
-          
-          // var firstVisableChild = visablePanels()[0];
-          
+        
           if( container.children().length < 1 ) { // if container is empty, create a temporary inside element & measure it
             container.append('<div id="TestElementRemoveMe">&nbsp;</div>');
             var visableChild = $('#TestElementRemoveMe'),
@@ -110,6 +125,17 @@
             return firstVisableChild.position();
           };
         },
+        reorderPanels = function() {
+          if( self.options('order') == 'auto' ) {
+            var panelObjects = visablePanels().concat(invisablePanels()),
+                panelIDs = [];
+                
+            // collect id's from panel objects
+            $.each(panelObjects, function(i,p) { panelIDs.push(p[0].id); });
+            self.data('panels', panelIDs);
+          };
+          return self.data('panels');
+        },
         repositionPanels = function() {
           var nextPosition    = insidePositionFor(self),
               vPanels         = visablePanels(),
@@ -119,23 +145,30 @@
           $.each(vPanels, function(i, panel) {  // position each visablePanel
             // Grow the container height as needed
             if (self.height() < panel.height()) self.height(panel.height());
-            // record max panel height
+            // Record MAX panel height
             if (panel.height() > maxPanelHeight ) maxPanelHeight = panel.height();
-            // object for css changes
+            
             var css = {position:'absolute', top:nextPosition.top, left:nextPosition.left}; 
-            // set width to calculated width when set to width is set to 'auto'
-            if( self.options('width') == 'auto' ) css.width = targetWidth;
-            // Apply css settings to panel
-            panel.css(css);
-            // if using auto width, reset the width using measured size, preventing oversized panels
-            if( self.options('width') == 'auto' ) { // adjust rendered size to desired size
+
+            switch (self.options('width')) {
+            case 'auto': // adjust rendered size to desired size
+              // Object for css changes
+              css.width = targetWidth;
+              panel.css(css);
+              // Calculate width after appliation and adjust for margin differences, etc.
               css.width = css.width-(panel.outerWidth()-targetWidth);
               panel.css(css);
+              break;
+            case 'maintain':
+              css.width = panel.data('original').width;
+              panel.css(css);
+              break;
             };
             // set next starting position
             nextPosition.left = nextPosition.left + panel.outerWidth();
           });
           self.height(maxPanelHeight);
+          reorderPanels();
         };
     
     
@@ -151,10 +184,13 @@
           params = typeof(options)=='object' ? options : {};  // ensure params as an object
       
         var opts = self.data('options');                      // shortcut variable
+        if( typeof(opts) == 'undefined' ) {
+        }
         for (key in params) { opts[key] = params[key]; }      // copy any options from params
-        opts.order = opts.order || 'maintain';                // set default
-        opts.width = opts.width || 'maintain';                // set default
-        opts.infer = opts.infer || true;                      // set default
+        // opts.order = opts.order || 'maintain';                // set default
+        if ( !opts.order ) {opts.order = 'maintain';} 
+        if ( !opts.width ) {opts.width = 'maintain';}                // set default
+        if ( !opts.infer ) {opts.infer = true;}                      // set default
       
         return opts;
       };
@@ -170,16 +206,19 @@
         // ensure element has an id
         if (!el.id) el.id = 'jPanelAutoID' + self.panels().length;
         // add unique id's to panels
-        if(self.panels().indexOf(el.id)<0) self.panels()[self.panels().length] = el.id;
+        if(self.panels().indexOf(el.id)<0) 
+          self.panels().push(el.id);
         
         // backup original order, position, width, & height
         el = $(el);
         el.data('original',{});
         var original = el.data('original');
-        original.Position = el.position();
+        original.position = el.position();
         original.height = el.height();
         original.width = el.width();
         original.order = self.panels().indexOf(el[0].id);
+        
+        
       } else if( self.options('infer') ) { // no element given - try infer by calling addPanel on each child.
         self.children().each(function(i,el) { self.addPanel(el); });
       };
@@ -195,7 +234,7 @@
       } else if( self.options('infer') ) { // no element given - try infer
         // collect id's of child elements
         var ids = [];
-        self.children().each(function(i,el) { if(el.id) ids[ids.length]=el.id; }); 
+        self.children().each(function(i,el) { if(el.id) ids.push(el.id); }); 
         
         for ( i in self.panels() ) { // Remove any panel elements that are missing in the DOM
           if( ids.indexOf(self.panels()[i]) < 0 ) self.panels().splice(i,1);

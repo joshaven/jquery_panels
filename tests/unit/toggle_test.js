@@ -1,5 +1,5 @@
 $(document).ready(function(){
-  module('Toggle tests jPanel()')
+  module('Toggle tests jPanel()');
   test(".toggles()", function() {
     same( $('#container').jPanel().toggles(), {}, 'Should return an array, even when empty');
     equals( $(document.body).data('jPanelToggles'), 
@@ -51,4 +51,11 @@ $(document).ready(function(){
     $('#container2').append('<div id="d3"></div><div id="d4"></div>').jPanel();
     same($('#container').jPanel().toggles(), {'d1Toggle':'d1', 'd2Toggle':'d2', 'd3Toggle':'d3', 'd4Toggle':'d4'}, 'Should infer toggles for all div elements');
   });
+
+  // test("toggle should make object invisable", function() {
+  //   $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" />');
+  //   var container = $('#container').append('<div id="d1"></div><div id="d2"></div>').jPanel();
+  //   
+  //   ok(container.invisablePanels());
+  // });
 });
