@@ -203,21 +203,25 @@
     // Expects an element proper that is to be added to panels or nothing to infer panels. Returns panels.
     this.addPanel = function(el) {
       if(el) { 
-        // ensure element has an id
-        if (!el.id) el.id = 'jPanelAutoID' + self.panels().length;
-        // add unique id's to panels
-        if(self.panels().indexOf(el.id)<0) 
-          self.panels().push(el.id);
-        
-        // backup original order, position, width, & height
-        el = $(el);
-        el.data('original',{});
-        var original = el.data('original');
-        original.position = el.position();
-        original.height = el.height();
-        original.width = el.width();
-        original.order = self.panels().indexOf(el[0].id);
-        
+        try { // protects against trying to add non-positional elements
+          $(el).position(); // this will bomb if the element is not positional, tripping the catch
+          
+          // ensure element has an id
+          if( !el.id ) el.id = 'jPanelAutoID' + self.panels().length;
+          // add unique id's to panels
+          if( self.panels().indexOf(el.id)<0 ) 
+            self.panels().push(el.id);
+
+          // backup original order, position, width, & height
+          el = $(el);
+          el.data('original',{});
+          var original = el.data('original');
+          original.position = el.position();
+          original.height = el.height();
+          original.width = el.width();
+          original.order = self.panels().indexOf(el[0].id);
+          
+        } catch(err) {}
         
       } else if( self.options('infer') ) { // no element given - try infer by calling addPanel on each child.
         self.children().each(function(i,el) { self.addPanel(el); });
@@ -226,7 +230,6 @@
       repositionPanels();
       return self.panels();
     };
-
     // Expects an element proper that is to be removed from panels. Returns panels.
     this.removePanel = function(el) {
       if(el){
