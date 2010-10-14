@@ -82,4 +82,27 @@ $(document).ready(function(){
   //   ok(false, 'Should FAIL - need to write tests');
   // });
   
-}); // end of document ready function
+  test('Should be able to glue panels to toggels', function() {
+    $(document.body).append('<span id="container3_Panel0_AutoIDToggle"></span><span id="container3_Panel1_AutoIDToggle"></span>');
+    $(document.body).append('<div id="container3"> <div>.</div> <div>.</div> </div>');
+    var container       = $('#container3').jPanel( {panel:{ glue:{top: 'bottom', left: 'left'} }} ),
+        toggle1         = $('#container3_Panel0_AutoID'),
+        toggle2         = $('#container3_Panel0_AutoID');
+        topOfPanel1     = parseInt($(container.children()[0]).position().top, 10),
+        bottomOfToggle1 = parseInt(toggle1.position().top+toggle1.height(), 10),
+        topOfPanel2     = parseInt($(container.children()[1]).position().top, 10),
+        bottomOfToggle2 = parseInt(toggle2.position().top+toggle2.height(), 10),
+        leftOfPanel1    = parseInt($(container.children()[0]).position().left, 10),
+        leftOfPanel2    = parseInt($(container.children()[1]).position().left, 10),
+        leftOfToggle1   = parseInt(toggle1.position().left, 10),
+        leftOfToggle2   = parseInt(toggle2.position().left, 10);
+    
+    equals( topOfPanel1, bottomOfToggle1+1, 'Should position top of panel at bottom edge of toggle' );
+    equals( topOfPanel2, bottomOfToggle2+1, 'Should position top of panel at bottom edge of toggle' );
+    
+    equals( leftOfPanel1, leftOfToggle1, 'Should position left of panel even with left of toggle' );
+    equals( leftOfPanel2, leftOfToggle2, 'Should position left of panel even with left of toggle' );
+    container.remove();
+  });
+  
+});
