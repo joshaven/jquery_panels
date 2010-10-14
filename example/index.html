@@ -12,7 +12,7 @@
   <body>
     <h1>jPanel Example</h1>
 <!-- Example 1 -->
-    <h2>Three div elements: Toggle-able with maintained Width &amp; Order</h2>
+    <h2>Toggle-able Content Sections: Toggle-able with maintained Width &amp; Order</h2>
     <div>
       <p>
         <input id="box1Toggle" type="button" value="Toggle Box 1" />
@@ -49,7 +49,7 @@
       </blockquote>
     </div>
 <!-- Example 2 -->
-    <h2>Three div elements: Toggle-able with auto Width &amp; Order</h2>
+    <h2>Self Positioning Content Sections: Toggle-able with auto Width &amp; Order</h2>
     <div>
       <p>
         <input id="box4Toggle" type="button" value="Toggle Box 4" />
@@ -85,6 +85,60 @@
         </p>
       </blockquote>
     </div>
+<!-- Example 3 -->
+    <h2>Menu Style Example: Toggle-able, positioned by toggle, one visible at a time</h2>
+    <div>
+      <div class="menu"> 
+        <span id="menu1Toggle">File</span>
+        <span id="menu2Toggle">Edit</span>
+        <span id="menu3Toggle">View</span>
+      </div>
+      <div id="container3">
+        <ul id="menu1">
+          <li>New</li><li>Open</li><li>Save</li><li>etc...</li><li>Exit</li>
+        </ul>
+        <ul id="menu2">
+          <li>Copy</li><li>Paste</li><li>Cut</li><li>etc...</li>
+        </ul>          
+        <ul id="menu3">
+          <li>Refresh</li><li>Full Screen</li><li>Zoom</li><li>etc...</li>
+        </ul>
+      </div>
+      <div>
+        <p>This is a content section.  The menu will appear over this section.</p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut 
+          labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
+          nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate 
+          velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
+          sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+      <script type="text/javascript">
+        $('#container3').jPanel({panel:{multiple: false}});
+      </script>
+      <h3>Here is the HTML &amp; JavaScript that went into the example above:</h3>
+      <blockquote>
+        <p>
+          <code>
+            &lt;p&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box4Toggle" type="button" Value="Toggle Box 4" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box5Toggle" type="button" Value="Toggle Box 5" /&gt;<br />
+            &nbsp;&nbsp;&lt;input id="box6Toggle" type="button" Value="Toggle Box 6" /&gt;<br />
+            &lt;/p&gt;<br />
+            &lt;div id="container"&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box4"&gt;This is box 4&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box5"&gt;This is box 5&lt;/div&gt;<br />
+            &nbsp;&nbsp;&lt;div id="box6"&gt;This is box 6&lt;/div&gt;<br />
+            &lt;/div&gt;<br />
+            &lt;script type="text/javascript"&gt;<br />
+              &nbsp;&nbsp;$('#container').jPanel({width:'auto', order:'auto'});<br />
+            &lt;/script&gt;<br />
+          </code>
+        </p>
+      </blockquote>
+    </div>
+
 
     <div id="footer">Copyright© 2010 Joshaven Potter</div>
   </body>
