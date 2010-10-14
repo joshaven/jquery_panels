@@ -15,26 +15,46 @@
   /**  $(container).jPanel(options)  **
    *
    * Input: Run on a "container" jQuery object with an optional key pair object.  
-   *   order:   (auto, maintain) - defaults to maintain
-   *              auto: Panels are appended to the visable pannels whenever a panels is added or made visable
-   *              maintain: Auto positioned when added, prior position is maintained when toggled on & off
-   *   width:   (auto, maintain) - defaults to maintain
-   *              auto: Panels are resized to give equal space: 1/2 to each, 1/3 to three, etc.
-   *              maintain: Panels are given equal space unless changed which fixes a panels's width
-   *   infer:   true/false - defaults to true
-   *   toggles: {link_reference: child_reference} Both key & value being jQuery lookup Strings.
+   *   width:   (auto, maintain, {unit}) - width of the container [defaults to auto]
+   *              auto: width of container is maintained by script
+   *              maintain: width container is left alone
+   *              {unit}: width is set to specified... ie: {width: '100px'} or {width: '50%'}
+   *   height:  (auto, maintain, {unit}) - Height of the container [defaults to auto]
+   *              auto: height of container is maintained by script (auto fit to panels)
+   *              maintain: height container is left alone
+   *              {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}
+   *   infer:   true/false - defaults to true - inference of panels & toggles for container
+   *   toggles: {'link_id': 'panel_id'} Both key & value being jQuery lookup Strings.
    *              To make toggle information inferable, the toggle link/button must be named
    *              in accordance with the panel name.  For exmaple with "accountDisp", if an element
    *              with an id of "accountDispToggle" is found, it will be infered as the toggle when 
    *              the panel is added to the container, otherwise you will have to specify the toggle
    *              with this option.  
    *              Example use:  $(container).jPanel({toggles: {'#btn1':'#panel1' '#lnk2':'#panel2'}});
-   *   panels:  [ref, ref] This can be reliabely infered as long as infer is set to true.
+   *   panels:  ['panel_id_1', 'panel_id_2'] This can be reliabely infered as long as infer is set to true.
    *              Optional, a jQuery Array of elements or lookup(s) which can be
    *              converted into a jQuery Array of elements.  If you want to specify the panels,
    *              you will likely also want to set infer to false, otherwise the panel option will have 
    *              to be specified each time jPanel is called to skip panel inference. 
    *              Example use: $(container).jPanel({panels: ['#panel1', '#panel2'], infer: false });
+   *   panel: {opts} - universal settings for individual panel's
+   *      order:    (auto, maintain) - Ordering of panels within a container [defaults to maintain]
+   *                  auto: Panels are appended to the visable pannels whenever a panels is added or made visable
+   *                  maintain: Auto positioned when added, prior position is maintained when toggled on & off
+   *      height:   (auto, maintain) - [defaults to maintain]
+   *                  auto: Panels are resized to ideal height
+   *                  maintain: Panel height is left alone
+   *                  {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}
+   *      width:    (auto, maintain) - [defaults to maintain]
+   *                  auto: Panels are resized to give equal space: 1/2 to each, 1/3 to three, etc.
+   *                  maintain: Panels are given equal space unless changed which fixes a panels's width
+   *                  {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}
+   *      show:     (["panel_ids"]) - Panels visable after initialization, referenced by element id [defaults to showing all panels]
+   *      multiple: true/false [true] - showing one hides the others when multiple is set to false
+   *      glue:     false/{panel_side: toggle_side} - attaches panel to toggle [default is not to glue, rather to toggle within it's container]
+   *                  accepts sides named: top, right, bottom, left)
+   *                  ie: {top: 'bottom', left: 'left'} top of panel is attached to bottom of toggle and left sides are in alignment
+   *
    *
    * Process: Effects the display of an elements direct child elements
    * 
@@ -58,8 +78,8 @@
   **/
   $.fn.jPanel = function(options) {
     // Initialize DOM data storage for body & container
-    if( !$(document.body).data('jPanelToggles') ) 
-      $(document.body).data('jPanelToggles', {});
+    if( !this.data('toggles') ) 
+      this.data('toggles', {});
     if( !this.data('panels') )
       this.data('panels', []);
     if( !this.data('options') ) 
@@ -70,10 +90,10 @@
 
     // Private methods & variables
     var self = this,
-        toggleData = $(document.body).data('jPanelToggles'),
+        toggleData = self.data('toggles'),
         panelData = this.data('panels'),
         init = function() {
-          if( self.length == 0 ) return false; // bail out gracefully if the container object doesn't exist.
+          if( self.length == 0 ) return false; // bailout gracefully if the container object doesn't exist.
           
           if( !self.data('jPanel') ) {  // initialize jPanel only if it has not been run on this container element
             self.data('jPanel', true);  // that this is a jPanel container element
@@ -84,7 +104,17 @@
           return self;                  // return self: 'this' of the jPanel object, a jQuery object.
         },
         toggleFunction = function() {
-          $('#'+$(document.body).data('jPanelToggles')[this.id]).toggle();
+          // if multiple is false hide everything first
+          var associatedPanel = $('#'+self.toggles(this.id)),
+              wasVisable = associatedPanel.is(':visible');
+          
+          if( !self.options('panel').multiple ) {
+            self.children().hide();
+            if( !wasVisable )
+              $('#'+self.toggles(this.id)).show();
+          } else {
+            associatedPanel.toggle();
+          }
           repositionPanels();
         },
         visablePanels = function() { // returns an array of panel jquery dom objects
@@ -136,7 +166,7 @@
           };
           return self.data('panels');
         },
-        repositionPanels = function() {
+        repositionPanels = function() { 
           var nextPosition    = insidePositionFor(self),
               vPanels         = visablePanels(),
               targetWidth     = self.width() / visablePanels().length;
@@ -150,7 +180,7 @@
             
             var css = {position:'absolute', top:nextPosition.top, left:nextPosition.left}; 
 
-            switch (self.options('width')) {
+            switch (self.options('panel').width) {
             case 'auto': // adjust rendered size to desired size
               // Object for css changes
               css.width = targetWidth;
@@ -169,8 +199,14 @@
           });
           self.height(maxPanelHeight);
           reorderPanels();
+        },
+        isEmpty = function(obj) {
+          for(var i in obj){ if( obj.hasOwnProperty(i) ) return false; };
+          return true;
+        },
+        isArray = function(obj) {
+          return $.isArray(obj);
         };
-    
     
   // Public Methods
     // Expects object or nil for setter 
@@ -184,43 +220,65 @@
           params = typeof(options)=='object' ? options : {};  // ensure params as an object
       
         var opts = self.data('options');                      // shortcut variable
-        if( typeof(opts) == 'undefined' ) {
-        }
+
         for (key in params) { opts[key] = params[key]; }      // copy any options from params
-        // opts.order = opts.order || 'maintain';                // set default
-        if ( !opts.order ) {opts.order = 'maintain';} 
-        if ( !opts.width ) {opts.width = 'maintain';}                // set default
-        if ( !opts.infer ) {opts.infer = true;}                      // set default
+        // set defaults
+        if( typeof(opts.height) == "undefined" ) opts.height = 'maintain';  // container will adjust height to panels
+        if( typeof(opts.width) == "undefined" )  opts.width  = 'maintain';  // container will adjust width to panels
+        if( typeof(opts.infer) == "undefined" )  opts.infer  = true;
+        
+        if( typeof(opts.panel) == "undefined" )  opts.panel  = {};
+        if( typeof(opts.panel.width) == "undefined" )   opts.panel.width  = 'maintain'; // width is maintained
+        if( typeof(opts.panel.height) == "undefined" )  opts.panel.height = 'maintain'; // height is maintained
+        if( typeof(opts.panel.order) == "undefined" )   opts.panel.order  = 'maintain'; // order is not altered by visability
+        // opts.panel.show should default to undefined
+        // opts.panel.glue should default to undefined
+        if( typeof(opts.panel.multiple) == "undefined" )   opts.panel.multiple  = true; // able to show more then one panel at a time
+      
+        if( opts.panel.multiple == false && typeof(opts.panel.show) == 'undefined' ) {
+          opts.panel.show = [0];
+        }
       
         return opts;
       };
     };
   
     this.panels = function(instance) {
-      return instance ? self.data('panels')[self.data('panels').indexOf(instance)] : self.data('panels');
+      return instance ? self.data('panels').indexOf(instance) : self.data('panels');
     };
 
     // Expects an element proper that is to be added to panels or nothing to infer panels. Returns panels.
     this.addPanel = function(el) {
-      if(el) { 
-        try { // protects against trying to add non-positional elements
-          $(el).position(); // this will bomb if the element is not positional, tripping the catch
+      el = $(el);
+      if( el.length > 0 ) { 
+        try { 
+          // error trap protects against trying to add non-positional elements
+          // this will bomb if the element is not positional, tripping the catch
+          el.position(); 
           
           // ensure element has an id
-          if( !el.id ) el.id = 'jPanelAutoID' + self.panels().length;
+          if( !el[0].id ) el[0].id = self[0].id+'_Panel' + self.panels().length + '_AutoID';
           // add unique id's to panels
-          if( self.panels().indexOf(el.id)<0 ) 
-            self.panels().push(el.id);
+          if( self.panels().indexOf(el[0].id)<0 ) 
+            self.panels().push(el[0].id);
 
           // backup original order, position, width, & height
-          el = $(el);
-          el.data('original',{});
+          if( !el.data('original') ) el.data('original',{});
           var original = el.data('original');
-          original.position = el.position();
-          original.height = el.height();
-          original.width = el.width();
-          original.order = self.panels().indexOf(el[0].id);
-          
+          if( isEmpty(original) ) {
+            original.position = el.position();
+            original.height = el.height();
+            original.width = el.width();
+            original.order = self.panels().indexOf(el[0].id);
+
+            // if show is an array... otherwise ignore show properity
+            if( isArray(self.options('panel').show) ) { 
+              // hide unless in show by id or index of id in panels().
+              if( self.options('panel').show.indexOf(el[0].id) < 0 && 
+                  self.options('panel').show.indexOf(self.panels(el[0].id)) < 0 ) el.hide(); 
+            };
+          };
+                    
         } catch(err) {}
         
       } else if( self.options('infer') ) { // no element given - try infer by calling addPanel on each child.

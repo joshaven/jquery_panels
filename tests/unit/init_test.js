@@ -5,16 +5,32 @@ $(document).ready(function(){
   });
 
   test(".options()", function() {
+    $('#container').append('<div></div><div></div><div></div><div></div>');
+    var defaults = { 
+      height: "maintain", 
+      width: "maintain", 
+      infer: true,
+      
+      panel: { 
+        width:  "maintain", 
+        height: "maintain", 
+        order:  "maintain",
+        multiple: true
+        } 
+      };
+      
     same( $('#container').jPanel().options(), 
-      {order: "maintain", width: "maintain", infer: true }, 
+      defaults, 
       'Should infer defaults' );
     
-    same( $('#container').jPanel({order: 'auto'}).options(), 
-      {order: 'auto', width: 'maintain', infer: true }, 
+    defaults.panel.order = 'auto';
+    
+    same( $('#container').jPanel({panel: {order: 'auto'}}).options(), 
+      defaults,
       'Should overwrite defaults with given properities' );
     
     same( $('#container').jPanel().options(), 
-      {order: 'auto', width: 'maintain', infer: true }, 
+      defaults, 
       'Should maintain prior options');
   });
 

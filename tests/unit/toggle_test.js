@@ -2,14 +2,14 @@ $(document).ready(function(){
   module('Toggle tests jPanel()');
   test(".toggles()", function() {
     same( $('#container').jPanel().toggles(), {}, 'Should return an array, even when empty');
-    equals( $(document.body).data('jPanelToggles'), 
+    equals( $('#container').data('toggles'), 
             $('#container').jPanel().toggles(), 
             'the panels() method should return the data("toggles") object');
 
     $('#container').jPanel().addToggle({one:1, two:2});
 
     same( $('#container').jPanel().toggles('one'), 1, 'Should be able to ask for a properity of the toggle' );
-    $(document.body).data('jPanelToggles', {});   // reset manually added toggles
+    $('#container').data('toggles', {});   // reset manually added toggles
   });
 
   test(".addToggle()", function() {
@@ -27,7 +27,7 @@ $(document).ready(function(){
         
     same( $('#container').jPanel().addToggle({d2Button: 'd2'}), {'d1Toggle': 'd1', 'd2Button': 'd2'},
           'Should add when undetectable name is specified');
-    $(document.body).data('jPanelToggles', {});   // reset manually added toggles
+    $('#container').data('toggles', {});   // reset manually added toggles
   });
 
   test(".removeToggle()", function() {
@@ -49,7 +49,8 @@ $(document).ready(function(){
     $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" /><input id="d4Toggle" type="button" />');     
     $('#container').append('<div id="d1"></div><div id="d2"></div>').jPanel();
     $('#container2').append('<div id="d3"></div><div id="d4"></div>').jPanel();
-    same($('#container').jPanel().toggles(), {'d1Toggle':'d1', 'd2Toggle':'d2', 'd3Toggle':'d3', 'd4Toggle':'d4'}, 'Should infer toggles for all div elements');
+    same($('#container').jPanel().toggles(), {'d1Toggle':'d1', 'd2Toggle':'d2'}, 'Should infer toggles for all div elements');
+    same($('#container2').jPanel().toggles(), {'d3Toggle':'d3', 'd4Toggle':'d4'}, 'Should infer toggles for all div elements');
   });
 
 });

@@ -9,6 +9,10 @@ $(document).ready(function(){
     ok( $(ch[0]).position().top < $(ch[1]).position().top, 'Should position first child above second.');
   });
 
+  // test('Should position container normally', function() {
+  //   ok(false, 'Should FAIL - need to write tests');
+  // });
+
   module('Positioning after calling jPanel()');
   test("Should reposition elements", function() {
     $(document.body).append('<div id="container3"></div>');
@@ -20,26 +24,27 @@ $(document).ready(function(){
     container.remove();
   });
   
-  test('Should maintain width', function() {
+  test('Should maintain panelWidth', function() {
     $(document.body).append('<div id="container3"></div>');
     
     var container = $('#container3').append('<div id="c3d0">.</div><div id="c3d1">Hello World</div>'),
-        div0 = $('#c3d0').width(),
-        div1 = $('#c3d1').width();
+        div0width = $('#c3d0').width(),
+        div1width = $('#c3d1').width();
     container.jPanel();
-    
-// FIXME: should pass... the div is full width and is being resized to min-width when jPanel is called
-    
     ok( container.width()>100, 'Should have a reasonable width for container' );
-    equals( $(container.children()[0]).width(), div0, 'Should maintain div width' );
-    equals( $(container.children()[1]).width(), div1, 'Should maintain div width' );
+    equals( $(container.children()[0]).width(), div0width, 'Should maintain div width' );
+    equals( $(container.children()[1]).width(), div1width, 'Should maintain div width' );
     container.remove();
   });
-  
-  test('Should respond to auto width', function() {
+
+  // test('Should maintain panelHeight', function() {
+  //   ok(false, 'Should FAIL - need to write tests');
+  // });
+
+  test('Should respond to auto panel: {width: "auto"}', function() {
     $(document.body).append('<div id="container3"></div>');
     
-    var container = $('#container3').append('<div></div><div></div>').jPanel({width:'auto'});
+    var container = $('#container3').append('<div></div><div></div>').jPanel({panel:{width:'auto'}});
     
     ok( container.width()>100, 'Should have a reasonable width for container' );
     same( $(container.children()[0]).width(), parseInt(container.width()/2, 10), 'Should have a width of half of the container' );
@@ -68,5 +73,13 @@ $(document).ready(function(){
     
     container.remove(); // cleanup visable 
   });
+  
+  // test('Should respond to width for container', function() {
+  //   ok(false, 'Should FAIL - need to write tests');
+  // });
+  
+  // test('Should respond to height for container', function() {
+  //   ok(false, 'Should FAIL - need to write tests');
+  // });
   
 }); // end of document ready function
