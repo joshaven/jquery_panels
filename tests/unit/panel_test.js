@@ -68,14 +68,12 @@ $(document).ready(function(){
   });
 
   test("Should only show one element when set panel: {multiple: false}", function() {
-    console.log('>>>>>>>>>>>>>>>>');
     $(document.body).append('<div id="container3"><div></div><div></div><div></div></div>');
     var container = $('#container3').jPanel({panel: {multiple: false} });
     same(container.options('panel').show, [0]);
     ok( $(container.children()[0]).is(':visible') == true, 'Should be visable when show is set to first element.' );
     ok( $(container.children()[1]).is(':visible') == false, 'Should be invisable when show is set to first element.' );
     ok( $(container.children()[2]).is(':visible') == false, 'Should be invisable when show is set to first element.' );
-    console.log('<<<<<<<<<<<<<<<<');
     container.remove(); // important container is not in fixtures so it won't be auto cleared.
   });
   
