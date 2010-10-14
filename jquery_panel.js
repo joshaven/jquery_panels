@@ -263,7 +263,7 @@
             self.panels().push(el[0].id);
 
           // backup original order, position, width, & height
-          if( !el.data('original') ) el.data('original',{});
+          if( typeof(el.data('original') =='undefined') ) el.data('original',{});
           var original = el.data('original');
           if( isEmpty(original) ) {
             original.position = el.position();
