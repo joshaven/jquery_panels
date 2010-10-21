@@ -8,8 +8,10 @@ attempt to make dynamic content placement more like playing with Legos.
 MIT-License please refer to LICENSE.md
 
 ## Getting Started
-View the comments in the source code for usage.  I'll move the documentation into 
-this file once the API is stable, for now it is easier to document inline.
+View the index.html file from the example directory in a web browser to see the 
+how the code works.  For further information, view the comments in the source code.  
+I'll move the documentation into this file once the API is stable, for now it 
+is easier to document in the source code and example files.
 
 ## Installing
 The only file needed for use is "jquery_panel.js".
