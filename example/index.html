@@ -115,24 +115,30 @@
         </p>
       </div>
       <script type="text/javascript">
-        $('#container3').jPanel({panel:{multiple:false, glue:{left:'left', top:'bottom'} }});
+        $('#container3').jPanel({float:true, panel:{multiple:false, glue:{left:'left', top:'bottom'}}});
       </script>
       <h3>Here is the HTML &amp; JavaScript that went into the example above:</h3>
       <blockquote>
         <p>
           <code>
-            &lt;p&gt;<br />
-            &nbsp;&nbsp;&lt;input id="box4Toggle" type="button" Value="Toggle Box 4" /&gt;<br />
-            &nbsp;&nbsp;&lt;input id="box5Toggle" type="button" Value="Toggle Box 5" /&gt;<br />
-            &nbsp;&nbsp;&lt;input id="box6Toggle" type="button" Value="Toggle Box 6" /&gt;<br />
-            &lt;/p&gt;<br />
-            &lt;div id="container"&gt;<br />
-            &nbsp;&nbsp;&lt;div id="box4"&gt;This is box 4&lt;/div&gt;<br />
-            &nbsp;&nbsp;&lt;div id="box5"&gt;This is box 5&lt;/div&gt;<br />
-            &nbsp;&nbsp;&lt;div id="box6"&gt;This is box 6&lt;/div&gt;<br />
+            &lt;div class="menu"&gt;<br />
+            &nbsp;&nbsp;&lt;span id="menu1Toggle"&gt;File&lt;/span&gt;<br />
+            &nbsp;&nbsp;&lt;span id="menu2Toggle"&gt;Edit&lt;/span&gt;<br />
+            &nbsp;&nbsp;&lt;span id="menu3Toggle"&gt;View&lt;/span&gt;<br />
+            &lt;/div&gt;<br />
+            &lt;div id="container3"&gt;<br />
+              &nbsp;&nbsp;&lt;ul id="menu1"&gt;<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;New&lt;/li&gt;&lt;li&gt;Open&lt;/li&gt;&lt;li&gt;Save&lt;/li&gt;&lt;li&gt;etc...&lt;/li&gt;&lt;li&gt;Exit&lt;/li&gt;<br />
+              &nbsp;&nbsp;&lt;/ul&gt;<br />
+              &nbsp;&nbsp;&lt;ul id="menu2"&gt;<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;Copy&lt;/li&gt;&lt;li&gt;Paste&lt;/li&gt;&lt;li&gt;Cut&lt;/li&gt;&lt;li&gt;etc...&lt;/li&gt;<br />
+              &nbsp;&nbsp;&lt;/ul&gt;<br />
+              &nbsp;&nbsp;&lt;ul id="menu3"&gt;<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;Refresh&lt;/li&gt;&lt;li&gt;Full Screen&lt;/li&gt;&lt;li&gt;Zoom&lt;/li&gt;&lt;li&gt;etc...&lt;/li&gt;<br />
+              &nbsp;&nbsp;&lt;/ul&gt;<br />
             &lt;/div&gt;<br />
             &lt;script type="text/javascript"&gt;<br />
-              &nbsp;&nbsp;$('#container').jPanel({width:'auto', order:'auto'});<br />
+              &nbsp;&nbsp;$('#container3').jPanel({panel:{multiple:false, glue:{left:'left', top:'bottom'}}, float: true});<br />
             &lt;/script&gt;<br />
           </code>
         </p>

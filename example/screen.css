@@ -122,6 +122,10 @@ div.menu span {
 	-webkit-border-bottom-right-radius: 0;
 	-webkit-border-bottom-left-radius: 0;
 }
+.selected {
+  font-weight: bold;
+  color: #606;
+}
 
 div#container3 {
   height: 0;

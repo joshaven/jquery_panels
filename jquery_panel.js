@@ -70,12 +70,16 @@
    *        toggle: {'#accountBtn': '#accountsDisp', '#productsBtn': '#productsDisp'}
    *      });
    *
-   * Notes: Options are stored in the container so they don't need to be given unless a change 
-   * is desirable.  Options are not retained between page reloads.  Options will update
-   * the options given at a prior time, if given.  Theirfor you can change a single option by
-   * calling the jPanel() method with specifying the new options at any time.  An example would be
-   * calling without options, letting jPanel infer the panels and calling jPanel again and setting
-   * infer to false to freeze the panels inference.
+   * Notes: 
+   * - The class of "selected" is added or removed from toggles based upon the panels visability
+   * - Options are stored in the container so they don't need to be given unless a change 
+   *   is desirable.  
+   * - Options are not retained between page reloads.  
+   * - Options will update the options given at a prior time, if given.  Theirfor you can change a 
+   *   single option by calling the jPanel() method with specifying the new options at any time.  
+   *   An example would be calling container.jPanel() without options, letting jPanel infer the 
+   *   panels and calling jPanel again and setting container.jPanel({infer:false}) to freeze 
+   *   panel & toggel inference.
   **/
   $.fn.jPanel = function(options) {
     // Initialize DOM data storage for body & container
@@ -102,6 +106,7 @@
             self.addToggle();           // attempt toggle inference... must be after panel inference
           }
           repositionPanels();
+          setSelectedClass();
           return self;                  // return self: 'this' of the jPanel object, a jQuery object.
         },
         toggleFunction = function() {
@@ -116,6 +121,7 @@
           } else {
             associatedPanel.toggle();
           }
+          setSelectedClass();
           repositionPanels();
         },
         visablePanels = function() { // returns an array of panel jquery dom objects
@@ -174,6 +180,11 @@
           });
           return myToggleId;
         },
+        setSelectedClass = function() {
+          $.each(self.toggles(), function(toggleId, panelId) {
+            $('#'+panelId).is(':visible') ? $('#'+toggleId).addClass('selected') : $('#'+toggleId).removeClass('selected');  
+          });
+        },
         repositionPanels = function() {
           var nextPosition    = insidePositionFor(self),
               vPanels         = visablePanels(),
@@ -187,9 +198,10 @@
                 css         = {position:'absolute', top:nextPosition.top, left:nextPosition.left},
                 glue        = self.options('panel').glue;
             
-            // Increase the maxPanelHeight variable for setting of the container height
-            if( panelHeight > maxPanelHeight ) maxPanelHeight = panelHeight;
-            
+            if( self.options('float') != true ) {
+              // Increase the maxPanelHeight variable for setting of the container height
+              if( panelHeight > maxPanelHeight ) maxPanelHeight = panelHeight;
+            };
 
             if( typeof(glue) == 'object' ) {
               var toggleId = toggleFor(panel[0].id);
@@ -257,7 +269,7 @@
           }); // end of each panel
 
           reorderPanels();
-          self.height(maxPanelHeight); 
+          self.height(maxPanelHeight);
         },
         isEmpty = function(obj) {
           for(var i in obj){ if( obj.hasOwnProperty(i) ) return false; };
@@ -285,6 +297,7 @@
         if( typeof(opts.height) == "undefined" ) opts.height = 'maintain';  // container will adjust height to panels
         if( typeof(opts.width) == "undefined" )  opts.width  = 'maintain';  // container will adjust width to panels
         if( typeof(opts.infer) == "undefined" )  opts.infer  = true;
+        // opts.float should default to undefined
         
         if( typeof(opts.panel) == "undefined" )  opts.panel  = {};
         if( typeof(opts.panel.width) == "undefined" )   opts.panel.width  = 'maintain'; // width is maintained

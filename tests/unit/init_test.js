@@ -25,13 +25,16 @@ $(document).ready(function(){
     
     defaults.panel.order = 'auto';
     
-    same( $('#container').jPanel({panel: {order: 'auto'}}).options(), 
-      defaults,
+    same( $('#container').jPanel({panel: {order: 'auto'}}).options(), defaults,
       'Should overwrite defaults with given properities' );
     
-    same( $('#container').jPanel().options(), 
-      defaults, 
+    same( $('#container').jPanel().options(), defaults, 
       'Should maintain prior options');
+      
+    defaults.float = true;
+    
+    same( $('#container').jPanel({float:true}).options(), defaults,
+      'Should overwrite defaults with given properities' );    
   });
 
   test("Object Initialization", function() {
