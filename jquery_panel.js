@@ -24,6 +24,7 @@
    *              maintain: height container is left alone
    *              {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}
    *   infer:   true/false - defaults to true - inference of panels & toggles for container
+   *   float:   true/false - defaults to false - when true the elements float over the content, useful for menus.
    *   toggles: {'link_id': 'panel_id'} Both key & value being jQuery lookup Strings.
    *              To make toggle information inferable, the toggle link/button must be named
    *              in accordance with the panel name.  For exmaple with "accountDisp", if an element
@@ -100,7 +101,7 @@
             self.addPanel();            // attempt panel inferance
             self.addToggle();           // attempt toggle inference... must be after panel inference
           }
-          
+          repositionPanels();
           return self;                  // return self: 'this' of the jPanel object, a jQuery object.
         },
         toggleFunction = function() {
@@ -166,39 +167,97 @@
           };
           return self.data('panels');
         },
-        repositionPanels = function() { 
+        toggleFor = function(panelId) {
+          var myToggleId;
+          $.each(self.toggles(), function(tId, pId) {
+            if( pId == panelId ) myToggleId = tId;
+          });
+          return myToggleId;
+        },
+        repositionPanels = function() {
           var nextPosition    = insidePositionFor(self),
               vPanels         = visablePanels(),
-              targetWidth     = self.width() / visablePanels().length;
+              targetWidth     = self.width() / visablePanels().length,
               maxPanelHeight  = 0;
           
           $.each(vPanels, function(i, panel) {  // position each visablePanel
-            // Grow the container height as needed
-            if (self.height() < panel.height()) self.height(panel.height());
-            // Record MAX panel height
-            if (panel.height() > maxPanelHeight ) maxPanelHeight = panel.height();
+            var panel       = $(panel),
+                panelHeight = panel.outerHeight(),
+                panelWidth  = panel.outerWidth(),
+                css         = {position:'absolute', top:nextPosition.top, left:nextPosition.left},
+                glue        = self.options('panel').glue;
             
-            var css = {position:'absolute', top:nextPosition.top, left:nextPosition.left}; 
+            // Increase the maxPanelHeight variable for setting of the container height
+            if( panelHeight > maxPanelHeight ) maxPanelHeight = panelHeight;
+            
 
-            switch (self.options('panel').width) {
-            case 'auto': // adjust rendered size to desired size
-              // Object for css changes
-              css.width = targetWidth;
-              panel.css(css);
-              // Calculate width after appliation and adjust for margin differences, etc.
-              css.width = css.width-(panel.outerWidth()-targetWidth);
-              panel.css(css);
-              break;
-            case 'maintain':
-              css.width = panel.data('original').width;
-              panel.css(css);
-              break;
-            };
-            // set next starting position
-            nextPosition.left = nextPosition.left + panel.outerWidth();
-          });
-          self.height(maxPanelHeight);
+            if( typeof(glue) == 'object' ) {
+              var toggleId = toggleFor(panel[0].id);
+                  
+              if( toggleId ) {
+                var myToggle = $('#'+toggleId),
+                    myTogglePosition = myToggle.position(),
+                    myToggleHeight = myToggle.outerHeight(),
+                    myToggleWidth = myToggle.outerWidth();
+                
+                switch( glue.left ) { // panel's left
+                case 'left': // to toggle's left
+                  css.left = myTogglePosition.left;
+                  break;
+                case 'right': // to toggle's right
+                  css.left = myTogglePosition.left + myToggleWidth;
+                  break;
+                };
+                
+                switch( glue.right ) { // panel's right
+                case 'left': // to toggles left
+                  css.left = myTogglePosition.left - panelWidth;
+                  break;
+                case 'right': // to toggles right
+                  css.left = myTogglePosition.left + myToggleWidth - panelWidth;
+                  break;
+                };
+                
+                switch( glue.top ) { // panel's top
+                case 'top': // to toggle's top
+                  css.top = myTogglePosition.top;
+                  break;
+                case 'bottom': // to toggle's bottom
+                  css.top = myTogglePosition.top + myToggleHeight;
+                  break;              
+                };
+                
+                switch( glue.bottom ) {  // panel's bottom
+                case 'top': // to toggle's top
+                  css.top = myTogglePosition.top - panelHeight;
+                  break;
+                case 'bottom': // to toggle's bottom
+                  css.top = myTogglePosition.top - myToggleHeight - panelHeight;
+                  break;              
+                };
+              }; // end of if (toggleId )
+            } else { // glue option is not used
+              // set starting position based upon the space used
+              switch(self.options('panel').width) {
+              case 'auto': // adjust rendered width to desirable size
+                // Object for css changes
+                css.width = targetWidth;
+                panel.css(css);
+                // Calculate width after appliation and adjust for margin differences, etc.
+                css.width = css.width-(panel.outerWidth()-targetWidth);
+                break;
+              case 'maintain': // maintain original width
+                css.width = panel.data('original').width;
+                // panel.css(css);
+                break;
+              }; 
+              nextPosition.left = nextPosition.left + panelWidth;
+            }; // End of if (typeof(self.options('panel').glue) == 'object') ... else
+            panel.css(css);
+          }); // end of each panel
+
           reorderPanels();
+          self.height(maxPanelHeight); 
         },
         isEmpty = function(obj) {
           for(var i in obj){ if( obj.hasOwnProperty(i) ) return false; };
@@ -263,7 +322,7 @@
             self.panels().push(el[0].id);
 
           // backup original order, position, width, & height
-          if( typeof(el.data('original') =='undefined') ) el.data('original',{});
+          if( typeof(el.data('original') == 'undefined') ) el.data('original',{});
           var original = el.data('original');
           if( isEmpty(original) ) {
             original.position = el.position();

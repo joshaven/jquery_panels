@@ -83,26 +83,35 @@ $(document).ready(function(){
   // });
   
   test('Should be able to glue panels to toggels', function() {
-    $(document.body).append('<span id="container3_Panel0_AutoIDToggle"></span><span id="container3_Panel1_AutoIDToggle"></span>');
-    $(document.body).append('<div id="container3"> <div>.</div> <div>.</div> </div>');
+    $(document.body).append('<div id="toggles3"><span id="container3_Panel0_AutoIDToggle">One</span><span id="container3_Panel1_AutoIDToggle">Two</span></div>');
+    $(document.body).append('<div id="container3"> <div>1</div> <div>2</div> </div>');
     var container       = $('#container3').jPanel( {panel:{ glue:{top: 'bottom', left: 'left'} }} ),
-        toggle1         = $('#container3_Panel0_AutoID'),
-        toggle2         = $('#container3_Panel0_AutoID');
-        topOfPanel1     = parseInt($(container.children()[0]).position().top, 10),
-        bottomOfToggle1 = parseInt(toggle1.position().top+toggle1.height(), 10),
-        topOfPanel2     = parseInt($(container.children()[1]).position().top, 10),
-        bottomOfToggle2 = parseInt(toggle2.position().top+toggle2.height(), 10),
-        leftOfPanel1    = parseInt($(container.children()[0]).position().left, 10),
-        leftOfPanel2    = parseInt($(container.children()[1]).position().left, 10),
+        toggles         = $('#toggles3'),
+
+        toggle1         = $('#container3_Panel0_AutoIDToggle'),
+        toggle2         = $('#container3_Panel1_AutoIDToggle'),
         leftOfToggle1   = parseInt(toggle1.position().left, 10),
-        leftOfToggle2   = parseInt(toggle2.position().left, 10);
+        leftOfToggle2   = parseInt(toggle2.position().left, 10),
+        bottomOfToggle1 = parseInt(toggle1.position().top+toggle1.outerHeight(), 10),
+        bottomOfToggle2 = parseInt(toggle2.position().top+toggle2.outerHeight(), 10),
+        
+        panel1          = $(container.children()[0]),
+        panel2          = $(container.children()[1]),
+        topOfPanel1     = parseInt(panel1.position().top, 10),
+        topOfPanel2     = parseInt(panel2.position().top, 10),
+        leftOfPanel1    = parseInt(panel1.position().left, 10),
+        leftOfPanel2    = parseInt(panel2.position().left, 10);
+        
+        
     
-    equals( topOfPanel1, bottomOfToggle1+1, 'Should position top of panel at bottom edge of toggle' );
-    equals( topOfPanel2, bottomOfToggle2+1, 'Should position top of panel at bottom edge of toggle' );
+    equals( topOfPanel1, bottomOfToggle1, 'Should position top of panel1 at bottom edge of toggle1' );
+    equals( topOfPanel2, bottomOfToggle2, 'Should position top of panel2 at bottom edge of toggle2' );
     
-    equals( leftOfPanel1, leftOfToggle1, 'Should position left of panel even with left of toggle' );
-    equals( leftOfPanel2, leftOfToggle2, 'Should position left of panel even with left of toggle' );
+    equals( leftOfPanel1, leftOfToggle1, 'Should position left of panel1 even with left of toggle1' );
+    equals( leftOfPanel2, leftOfToggle2, 'Should position left of panel2 even with left of toggle2' );
+    
     container.remove();
+    toggles.remove();
   });
   
 });

@@ -30,19 +30,23 @@ $(document).ready(function(){
     $('#container').data('toggles', {});   // reset manually added toggles
   });
 
-  test(".removeToggle()", function() {
+  test(".removeToggle('toggleIdString') specifying toggle to be removed", function() {
     $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />');
-    $('#container').append('<div id="d1"></div><div id="d2"></div><div id="d3"></div>');
-    $('#container').jPanel().addToggle(); // infer toggles
-    same( $('#container').jPanel().removeToggle('d2Toggle'), {'d1Toggle':'d1', 'd3Toggle':'d3'},
-          'Should setup test');
+    var container = $('#container').append('<div id="d1"></div><div id="d2"></div><div id="d3"></div>').jPanel();
+    
+    same( container.jPanel().removeToggle('d2Toggle'), {'d1Toggle':'d1', 'd3Toggle':'d3'}, 'Should setup test');
+    same( container.jPanel().removeToggle('d3Toggle'), {'d1Toggle':'d1'}, 'Should setup test');
+    same( container.jPanel().toggles(), {'d1Toggle':'d1'}, 'Should setup test');
+  });
+  
+  test(".removeToggle() auto cleanup per missing toggle or panel", function() {
+    $('#buttons').append('<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />');
+    var container = $('#container').append('<div id="d1"></div><div id="d2"></div><div id="d3"></div>').jPanel();
 
-    $('#buttons')[0].innerHTML = '<input id="d1Toggle" type="button" /><input id="d2Toggle" type="button" /><input id="d3Toggle" type="button" />';
-    $('#container')[0].innerHTML = '<div id="d1"></div><div id="d2"></div><div id="d3"></div>';
-    same( $('#container').jPanel().addToggle(), {'d1Toggle':'d1', 'd2Toggle':'d2', 'd3Toggle':'d3'}, "Setup toggle test");
     $('#d1Toggle').replaceWith(''); // Remove d1Toggle element manually
     $('#d3').replaceWith(''); // Remove target d3 element manually
-    same( $('#container').jPanel().removeToggle(), {'d2Toggle': 'd2'}, "Should remove any toggles that don't have both target and toggle" );
+    container.jPanel().removeToggle();
+    same( container.jPanel().toggles(), {d2Toggle:'d2'}, 'Should setup test');
   });
 
   test("toggle inference on multiple objects", function() {
@@ -52,5 +56,4 @@ $(document).ready(function(){
     same($('#container').jPanel().toggles(), {'d1Toggle':'d1', 'd2Toggle':'d2'}, 'Should infer toggles for all div elements');
     same($('#container2').jPanel().toggles(), {'d3Toggle':'d3', 'd4Toggle':'d4'}, 'Should infer toggles for all div elements');
   });
-
 });
