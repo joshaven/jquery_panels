@@ -6,6 +6,7 @@
 * should be able to overlay partially... like menus
 * confirm: hidden elements can be added as panels
 * implement moving of panels with the mouse
+* feature: should be forced inside a container by default as if it were not absolutely positioned
 
 ## BUGS
 * When two (or more) containers are on a page and the top container changes size, 

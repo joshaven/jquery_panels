@@ -338,10 +338,12 @@
           if( typeof(el.data('original') == 'undefined') ) el.data('original',{});
           var original = el.data('original');
           if( isEmpty(original) ) {
-            original.position = el.position();
-            original.height = el.height();
-            original.width = el.width();
-            original.order = self.panels().indexOf(el[0].id);
+            original.position     = el.position();
+            original.height       = el.height();
+            original.width        = el.width();
+            original.outerHeight  = el.outerHeight();
+            original.outerWidth   = el.outerWidth();
+            original.order        = self.panels().indexOf(el[0].id);
 
             // if show is an array... otherwise ignore show properity
             if( isArray(self.options('panel').show) ) { 

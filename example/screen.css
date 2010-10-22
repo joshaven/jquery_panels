@@ -132,6 +132,15 @@ div#container3 {
   width: 0;
 }
 
+div#container {
+  border: 1px solid orange;
+}
+
+div#container2 {
+  border: 1px solid orange;
+}
+
+
 div#container3 ul {
   margin: 0;
   padding-left: 3px;

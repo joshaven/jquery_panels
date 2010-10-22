@@ -9,10 +9,6 @@ $(document).ready(function(){
     ok( $(ch[0]).position().top < $(ch[1]).position().top, 'Should position first child above second.');
   });
 
-  // test('Should position container normally', function() {
-  //   ok(false, 'Should FAIL - need to write tests');
-  // });
-
   module('Positioning after calling jPanel()');
   test("Should reposition elements", function() {
     $(document.body).append('<div id="container3"></div>');
@@ -36,10 +32,6 @@ $(document).ready(function(){
     equals( $(container.children()[1]).width(), div1width, 'Should maintain div width' );
     container.remove();
   });
-
-  // test('Should maintain panelHeight', function() {
-  //   ok(false, 'Should FAIL - need to write tests');
-  // });
 
   test('Should respond to auto panel: {width: "auto"}', function() {
     $(document.body).append('<div id="container3"></div>');
@@ -114,4 +106,27 @@ $(document).ready(function(){
     toggles.remove();
   });
   
+  test("Should not chanege distance of panel from container boundries", function() {
+    $(document.body).append('<div id="container3"></div>');
+    
+    var container           = $('#container3').append('<div>Hello</div>').css({padding:'4px', margin:'3px'}),
+        panel               = $(container.children()[0]).css({padding:'2px', margin:'1px'}),
+        distanceFromTop     = panel.position().top - container.position().top,
+        distanceFromRight   = container.position().left+container.width() - panel.position().left+panel.width(),
+        distanceFromBottom  = container.position().top+container.height() - panel.position().top+panel.height(),
+        distanceFromLeft    = panel.position().left - container.position().left;
+    
+    container.jPanel();
+    
+    same( panel.position().top-container.position().top, distanceFromTop,
+          'Distance from top should not change');
+    same( container.position().left+container.width()-panel.position().left+panel.width(), distanceFromRight,
+          'Distance from right should not change');
+    same( container.position().top+container.height()-panel.position().top+panel.height(), distanceFromBottom,
+          'Distance from bottom should not change');
+    same( panel.position().left-container.position().left, distanceFromLeft,
+          'Distance from left should not change');
+
+    container.remove();
+  });
 });
