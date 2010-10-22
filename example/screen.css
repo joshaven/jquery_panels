@@ -40,7 +40,6 @@ h3 {
 
 div {
   background-color: #D2E0E6;
-  margin: 2px;
   padding: 1px;
 }
 
@@ -127,20 +126,10 @@ div.menu span {
   color: #606;
 }
 
-div#container3 {
-  height: 0;
-  width: 0;
+/*#container div, #container2 div {
+  margin: 5px;
 }
-
-div#container {
-  border: 1px solid orange;
-}
-
-div#container2 {
-  border: 1px solid orange;
-}
-
-
+*/
 div#container3 ul {
   margin: 0;
   padding-left: 3px;

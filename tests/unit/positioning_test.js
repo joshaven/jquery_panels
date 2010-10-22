@@ -28,8 +28,8 @@ $(document).ready(function(){
         div1width = $('#c3d1').width();
     container.jPanel();
     ok( container.width()>100, 'Should have a reasonable width for container' );
-    equals( $(container.children()[0]).width(), div0width, 'Should maintain div width' );
-    equals( $(container.children()[1]).width(), div1width, 'Should maintain div width' );
+    equals( $(container.children()[0]).width(), div0width, 'Should maintain first div width' );
+    equals( $(container.children()[1]).width(), div1width, 'Should maintain second div width' );
     container.remove();
   });
 

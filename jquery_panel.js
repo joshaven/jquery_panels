@@ -102,6 +102,33 @@
           
           if( !self.data('jPanel') ) {  // initialize jPanel only if it has not been run on this container element
             self.data('jPanel', true);  // that this is a jPanel container element
+            
+            if( !self.data('original') ) self.data('original', {});
+            var orig = self.data('original');
+
+            // backup original padding and position
+            orig.position = self.position();
+            
+            orig.margin = {
+              top:    parseInt(self.css('margin-top'), 10),    right: parseInt(self.css('margin-right'), 10),
+              bottom: parseInt(self.css('margin-bottom'), 10), left:  parseInt(self.css('margin-left'), 10)
+            };
+            orig.border = {
+              top:    parseInt(self.css('border-top-width'), 10),    right: parseInt(self.css('border-right-width'), 10),
+              bottom: parseInt(self.css('border-bottom-width'), 10), left:  parseInt(self.css('border-left-width'), 10)
+            };
+            orig.padding = {
+              top:    parseInt(self.css('padding-top'), 10),    right: parseInt(self.css('padding-right'), 10),
+              bottom: parseInt(self.css('padding-bottom'), 10), left:  parseInt(self.css('padding-left'), 10)
+            };
+            
+            orig.thickness = {
+              top:    orig.margin.top + orig.border.top + orig.padding.top,
+              right:  orig.margin.right + orig.border.right + orig.padding.right,
+              bottom: orig.margin.bottom + orig.border.bottom + orig.padding.bottom,
+              left:   orig.margin.left + orig.border.left + orig.padding.left
+            };
+                        
             self.addPanel();            // attempt panel inferance
             self.addToggle();           // attempt toggle inference... must be after panel inference
           }
@@ -145,22 +172,10 @@
           return invisable;
         },
         insidePositionFor = function(container) { // retuns an object: .position() of first element inside container
-          container = $(container); // work with jQuery object
-          
-          var firstVisableChild = $.each(container, function(i,el) {
-            el = $(el);
-            if( el.is(":visible") ) return el;
-          });
-        
-          if( container.children().length < 1 ) { // if container is empty, create a temporary inside element & measure it
-            container.append('<div id="TestElementRemoveMe">&nbsp;</div>');
-            var visableChild = $('#TestElementRemoveMe'),
-                myReturn = visableChild.position();
-            visableChild.remove();
-            return myReturn;
-          } else { // return measured first element
-            return firstVisableChild.position();
-          };
+          var c = $(container).data('original'),
+              pTop      = c.position.top + c.margin.top + c.border.top + c.padding.top,
+              pLeft     = c.position.left + c.margin.left + c.border.left + c.padding.left;
+          return {top:pTop, left:pLeft};
         },
         reorderPanels = function() {
           if( self.options('order') == 'auto' ) {
@@ -187,16 +202,15 @@
         },
         repositionPanels = function() {
           var nextPosition    = insidePositionFor(self),
-              vPanels         = visablePanels(),
-              targetWidth     = self.width() / visablePanels().length,
+              visPan          = visablePanels(),
+              targetWidth     = self.width() / visPan.length,
               maxPanelHeight  = 0;
           
-          $.each(vPanels, function(i, panel) {  // position each visablePanel
-            var panel       = $(panel),
-                panelHeight = panel.outerHeight(),
-                panelWidth  = panel.outerWidth(),
-                css         = {position:'absolute', top:nextPosition.top, left:nextPosition.left},
-                glue        = self.options('panel').glue;
+          $.each(visPan, function(i, panel) {  // position each visablePanel
+            var panelHeight   = panel.outerHeight(true),
+                panelWidth    = panel.outerWidth(true),
+                css           = {position:'absolute', top:nextPosition.top, left:nextPosition.left},
+                glue          = self.options('panel').glue;
             
             if( self.options('float') != true ) {
               // Increase the maxPanelHeight variable for setting of the container height
@@ -209,8 +223,8 @@
               if( toggleId ) {
                 var myToggle = $('#'+toggleId),
                     myTogglePosition = myToggle.position(),
-                    myToggleHeight = myToggle.outerHeight(),
-                    myToggleWidth = myToggle.outerWidth();
+                    myToggleHeight = myToggle.outerHeight(true),
+                    myToggleWidth = myToggle.outerWidth(true);
                 
                 switch( glue.left ) { // panel's left
                 case 'left': // to toggle's left
@@ -250,19 +264,18 @@
               }; // end of if (toggleId )
             } else { // glue option is not used
               // set starting position based upon the space used
-              switch(self.options('panel').width) {
+              switch( self.options('panel').width ) {
               case 'auto': // adjust rendered width to desirable size
                 // Object for css changes
                 css.width = targetWidth;
                 panel.css(css);
                 // Calculate width after appliation and adjust for margin differences, etc.
-                css.width = css.width-(panel.outerWidth()-targetWidth);
+                css.width = css.width-(panel.outerWidth(true)-targetWidth);
                 break;
-              case 'maintain': // maintain original width
+              case 'maintain': // maintain original width (Default)
                 css.width = panel.data('original').width;
-                // panel.css(css);
                 break;
-              }; 
+              };
               nextPosition.left = nextPosition.left + panelWidth;
             }; // End of if (typeof(self.options('panel').glue) == 'object') ... else
             panel.css(css);
@@ -341,8 +354,8 @@
             original.position     = el.position();
             original.height       = el.height();
             original.width        = el.width();
-            original.outerHeight  = el.outerHeight();
-            original.outerWidth   = el.outerWidth();
+            original.outerHeight  = el.outerHeight(true);
+            original.outerWidth   = el.outerWidth(true);
             original.order        = self.panels().indexOf(el[0].id);
 
             // if show is an array... otherwise ignore show properity
