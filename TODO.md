@@ -2,15 +2,13 @@
 
 ## TODO
 * confirm: addPanel(element) should append the container if the element is not part of the container
-* should have a feature for overlaying panels... interfacing like tabs
-* should be able to overlay partially... like menus
 * confirm: hidden elements can be added as panels
 * implement moving of panels with the mouse
-* feature: should be forced inside a container by default as if it were not absolutely positioned
 
 ## BUGS
-* When two (or more) containers are on a page and the top container changes size, 
-  the panels from the lower containers do not move with the page.
+* When the position of the toggle moves the glued panels don't move.  Example, changing the 
+  height of a object above the toggle changes from 100px to 0...  Either a callback on the 
+  document or a positioning loop is needed
 * Odd error when the toggle id is the same as the panel id... related to no data in panel... 
   should detect and fix or gracefully fail 
   

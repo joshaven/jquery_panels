@@ -39,14 +39,14 @@ $(container).jPanel(options)
               {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}  
    * __infer__   true/false - defaults to true - inference of panels & toggles for container  
    * __float__   true/false - defaults to false - when true the elements float over the content, useful for menus.  
-   * __toggles__ {'link_id': 'panel_id'} Both key & value being jQuery lookup Strings.  
+   * __toggles__ {'link\_id': 'panel\_id'} Both key & value being jQuery lookup Strings.  
               To make toggle information inferable, the toggle link/button must be named
-              in accordance with the panel name.  For exmaple with "accountDisp", if an element
-              with an id of "accountDispToggle" is found, it will be infered as the toggle when 
+              in accordance with the panel name.  For example with "accountDisp", if an element
+              with an id of "accountDispToggle" is found, it will be inferred as the toggle when 
               the panel is added to the container, otherwise you will have to specify the toggle
               with this option.  
               Example use:  $(container).jPanel({toggles: {'#btn1':'#panel1' '#lnk2':'#panel2'}});
-   * __panels__  ['panel_id_1', 'panel_id_2'] This can be reliabely infered as long as infer is set to true.  
+   * __panels__  ['panel\_id\_1', 'panel\_id\_2'] This can be reliably inferred as long as infer is set to true.  
               Optional, a jQuery Array of elements or lookup(s) which can be converted into a jQuery 
               Array of elements.  If you want to specify the panels, you will likely also want to set infer 
               to false, otherwise the panel option will have to be specified each time jPanel is called to 
@@ -64,7 +64,7 @@ $(container).jPanel(options)
                       auto: Panels are resized to give equal space: 1/2 to each, 1/3 to three, etc.  
                       maintain: Panels are given equal space unless changed which fixes a panels's width  
                       {unit}: height is set to specified... ie: {width: '100px'} or {width: '50%'}  
-      - __show__      (["panel_ids"]) - Panels visable after initialization, referenced by element id [defaults to showing all panels]  
+      - __show__      (["panel_ids"]) - Panels visible after initialization, referenced by element id [defaults to showing all panels]  
       - __multiple__  true/false [true] - showing one hides the others when multiple is set to false  
       - __glue__      false/{panel_side: toggle_side} - attaches panel to toggle [default is not to glue, rather to toggle within it's container]  
                       accepts sides named: top, right, bottom, left)  
