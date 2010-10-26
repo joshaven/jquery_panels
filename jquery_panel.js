@@ -177,14 +177,36 @@
               pLeft     = c.position.left + c.margin.left + c.border.left + c.padding.left;
           return {top:pTop, left:pLeft};
         },
+        swapElements = function(elA, elB) {
+          elA=$(elA); elB=$(elB);
+          var a=elA.clone(true), b=elB.clone(true);
+          elA.replaceWith(b);
+          elB.replaceWith(a);
+        },
+        sortFunction = function(newOrder) { // moves elements into newOrder (array of element id's) & returns newOrder
+          var invertedPairs = {};
+
+          $.each(self.panels(), function(i,v) { // collect invertedPairs
+            if( v != newOrder[i] ) {
+              if( typeof(invertedPairs[newOrder.indexOf(v)]) == 'undefined' ) 
+                invertedPairs[i]=newOrder.indexOf(v);
+            }
+          });
+
+          $.each(invertedPairs, function(elIdA, elIdB) { // swapElements on each inverted pair
+            swapElements( '#'+self.panels()[elIdA], '#'+self.panels()[elIdB] );
+          });
+
+          return newOrder;
+        },
         reorderPanels = function() {
           if( self.options('order') == 'auto' ) {
             var panelObjects = visablePanels().concat(invisablePanels()),
                 panelIDs = [];
-                
             // collect id's from panel objects
             $.each(panelObjects, function(i,p) { panelIDs.push(p[0].id); });
-            self.data('panels', panelIDs);
+            
+            self.data('panels', sortFunction(panelIDs));
           };
           return self.data('panels');
         },
@@ -209,7 +231,7 @@
           $.each(visPan, function(i, panel) {  // position each visablePanel
             var panelHeight   = panel.outerHeight(true),
                 panelWidth    = panel.outerWidth(true),
-                css           = {position:'absolute', top:nextPosition.top, left:nextPosition.left},
+                css           = {display:'inline-block'},
                 glue          = self.options('panel').glue;
             
             if( self.options('float') != true ) {
@@ -219,6 +241,11 @@
 
             if( typeof(glue) == 'object' ) {
               var toggleId = toggleFor(panel[0].id);
+              
+              delete css.display;
+              css.position  = 'absolute';
+              css.top       = nextPosition.top;
+              css.left      = nextPosition.left;
                   
               if( toggleId ) {
                 var myToggle = $('#'+toggleId),
